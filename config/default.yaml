@@ -1,0 +1,21 @@
+debug: true
+enable_tf: false
+static_variance: false
+static_camera_transform: false
+image_topic: /cv_camera/image_raw
+marker_dictionary: 11
+markers_length: [200] # length in mm.
+markers_200: [0, 1, 2, 3, 4, 5, 6, 207] # Markers id with length 0.
+camera_matrix: [554.254691191187, 0.0, 320.50, 0.0, 554.254691191187, 256.50, 0.0, 0.0, 1.0]
+camera_distortion: [0.0, 0.0, 0.0, 0.0, 0.0]
+mapTF_name: map
+baseTF_name: base_link
+markerTF_name: id_
+cameraTF_name: camera_optical_frame
+poseTopic_name: pose
+variance_matrix: [0.01, 0, 0, 0, 0, 0, 
+                  0, 0.01, 0, 0, 0, 0,
+                  0, 0, 0.01, 0, 0, 0,
+                  0, 0, 0, 0.01, 0, 0,
+                  0, 0, 0, 0, 0.01, 0,
+                  0, 0, 0, 0, 0, 0.01]

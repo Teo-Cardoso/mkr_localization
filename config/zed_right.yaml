@@ -1,0 +1,30 @@
+start_aruco_pose_estimate: true
+debug: true
+pose_topic_name: zed_right_pose
+enable_tf: true
+
+# Image Topic / Camera 
+image_topic:  /camera/right/image_raw
+marker_publish_topic_name: /found_markers_right
+camera_transform_name: zed_right_tf
+camera_reference_tf: world
+# camera_matrix: [1399.6, 0.0, 989.61, 0.0, 1399.6, 557.021, 0.0, 0.0, 1.0]
+# camera_distortion: [-0.175942, 0.0287108, 0.0, 0.0, 0.0]
+
+camera_matrix: [1450.1869981455918, 0.0, 1024.2716938056092, 0.0, 1456.7003618158726, 529.8720631317946, 0.0, 0.0, 1.0] #1080p
+camera_distortion: [-0.14988763622878937, -0.007263119226493289, -0.0005016595044301814, -0.004494459538626877, 0.0] #1080p
+
+# camera_matrix: [701.8980102539062, 0.0, 677.2210083007812, 0.0, 701.8980102539062, 360.5539855957031, 0.0, 0.0, 1.0] # 720px
+
+# Aruco Info
+marker_length: [10.0] # Unit: cm
+markers_10: [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 19.0, 20.0]
+
+arucoDictionary: 6x6_250
+marker_name: aruco_6x6_ # the ID will be the last string at the TF. Ex: aruco_6x6_1
+aruco_transform_namespace: panelTF/
+aruco_reference_tf: /tag
+
+
+# Frequency
+publish_frequecy: 60 # Hz

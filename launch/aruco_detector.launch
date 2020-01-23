@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="config_file" default="zed_right"/>
+    <group ns="marker_localization">
+        <rosparam command="load" file="$(find marker_localization)/config/$(arg config_file).yaml"/> -->
+        <node required="true" pkg="marker_localization" type="marker_localization" name="marker_localization" output="screen" />
+    </group>
+</launch>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+    <group ns="marker_localization">
+        <group ns="zed_left">
+            <rosparam command="load" file="$(find marker_localization)/config/zed_left.yaml"/>
+            <node required="true" pkg="marker_localization" type="marker_localization" name="cam_left_detector" output="screen" />
+        </group>
+
+        <group ns="zed_right">
+            <rosparam command="load" file="$(find marker_localization)/config/zed_right.yaml"/>
+            <node required="true" pkg="marker_localization" type="marker_localization" name="cam_right_detector" output="screen" />
+        </group>
+    </group>
+</launch>
