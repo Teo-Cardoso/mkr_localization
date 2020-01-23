@@ -26,6 +26,7 @@ int main(int argc, char* argv[]) {
         }
 
         ros::spinOnce();
+        ROS_INFO_ONCE("\nLocalization is working properly! Did you found your robot? Good Luck!");
     }
 
 }
