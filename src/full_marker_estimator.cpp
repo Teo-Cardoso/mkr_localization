@@ -6,6 +6,8 @@ bir::FullMarkerEstimator::FullMarkerEstimator(ros::NodeHandle& node):
     node_(node)
 {
     std::string posePublishTopic;
+    tf::StampedTransform markerTransform;
+
     node_.param<bool>("debug", enableDebug_, false);
     ROS_WARN_COND(!node_.param<bool>("enable_tf", enablePublishTF_, false) && enableDebug_, 
                                                                 "enable_tf did not found. Using default value: false");
@@ -22,12 +24,32 @@ bir::FullMarkerEstimator::FullMarkerEstimator(ros::NodeHandle& node):
     ROS_WARN_COND(!node_.param<std::string>("cameraTF_name", cameraTFName_, "camera_optical_frame") && enableDebug_,
                                              "cameraTF_name did not found. Using default value: camera_optical_frame");
     ROS_WARN_COND(!node_.param<std::string>("poseTopic_name", posePublishTopic, "pose") && enableDebug_,
-                                                            "poseTopic_name did not found. Using default value: pose");
-    
+                                                            "poseTopic_name did not found. Using default value: pose");   
+    ROS_WARN_COND(!node_.param<bool>("static_marker", staticMarker_, false) && enableDebug_, 
+                                                            "static_marker did not found. Using default value: false");    
+           
     posePublisher_ = node_.advertise<geometry_msgs::PoseWithCovarianceStamped>(posePublishTopic, 5);
     if(staticVariance_) {
         ROS_ASSERT_MSG(node_.getParam("variance_matrix", varianceValues_), 
                        "variance_matrix did not found. \nPlease fill it up the variance_matrix into rosparam server.");
+    }
+    if(staticMarker_) {
+        ROS_ASSERT_MSG(node_.getParam("static_markers_id", staticMarkersId_), 
+                   "static_markers_id did not found. \nPlease fill it up the static_markers_id into rosparam server.");
+        for(int index = 0; index < staticMarkersId_.size(); index++) {
+            try {
+                ROS_ASSERT_MSG(
+                    transformListener_.waitForTransform(mapTFName_,  markerTFName_ + std::to_string(index), 
+                    ros::Time(0), ros::Duration(1)), 
+                              "Some static aruco is not conected. Please check your launch file.\n Try: rqt_tf_tree.");
+                transformListener_.lookupTransform(mapTFName_, (markerTFName_ + std::to_string(index)), 
+                                                                                        ros::Time(0), markerTransform);
+                staticMarkersTransforms_.push_back(markerTransform);
+            } catch (tf::ExtrapolationException &e) {
+                ROS_ERROR_STREAM_COND(enableDebug_, e.what());
+                break; // Break the loop - If any tf failed, the processing will be canceled.
+            }
+        }
     }
     if(staticBaseCameraTransform_) {
         try {
@@ -82,18 +104,31 @@ void bir::FullMarkerEstimator::estimateCameraPositions(bir::MarkerPose& marker_p
 
     for(int index = 0; index < marker_poses.size(); index++) {
         tf::StampedTransform markerTransform; // Get the the Marker transform relative to the World
-        try {
-            bool transformAvailable = transformListener_.waitForTransform(mapTFName_,  markerTFName_ + 
-                                         std::to_string(marker_poses.ids.at(index)), ros::Time(0), ros::Duration(0.1));
-            if(!transformAvailable) continue;
-            transformListener_.lookupTransform(mapTFName_, markerTFName_ + std::to_string(marker_poses.ids.at(index)), 
-                                                                                        ros::Time(0), markerTransform);
-        } catch (tf::ExtrapolationException &e) {
-            ROS_ERROR_STREAM_COND(enableDebug_, e.what());
-            raw_camera_transforms.clear(); // Clean rawCameraPoses
-            break; // Break the loop - If any tf failed, the processing will be canceled.
+        // std::vector<int>::iterator it;
+        int transformVectorPose = 9999;
+        //Search for ID inside expectedMarkersIds.
+        for (int i = 0; i<staticMarkersId_.size();i++){
+            if(staticMarkersId_.at(i) == marker_poses.ids.at(index)){
+                transformVectorPose = i;
+            };
         }
-
+        // it = std::find_if(staticMarkersId_.begin(), staticMarkersId_.end(), 
+        //                          [index, marker_poses](const int& element) { return element == marker_poses.ids.at(index);});
+        if(transformVectorPose!=9999){
+            markerTransform = staticMarkersTransforms_[transformVectorPose];
+        } else{
+            try {
+                bool transformAvailable = transformListener_.waitForTransform(mapTFName_,  markerTFName_ + 
+                                            std::to_string(marker_poses.ids.at(index)), ros::Time(0), ros::Duration(0.1));
+                if(!transformAvailable) continue;
+                transformListener_.lookupTransform(mapTFName_, markerTFName_ + std::to_string(marker_poses.ids.at(index)), 
+                                                                                            ros::Time(0), markerTransform);
+            } catch (tf::ExtrapolationException &e) {
+                ROS_ERROR_STREAM_COND(enableDebug_, e.what());
+                raw_camera_transforms.clear(); // Clean rawCameraPoses
+                break; // Break the loop - If any tf failed, the processing will be canceled.
+            }
+        }
         // Get the Camera transform relative to the World (wTc = wTm * mTc)
         tf::Transform cameraWorldTransform = markerTransform * marker_poses.poses.at(index).inverse();
     

@@ -25,11 +25,13 @@ namespace bir {
         private:
             ros::NodeHandle node_;
             ros::Publisher posePublisher_;
-            bool enableDebug_, enablePublishTF_, staticBaseCameraTransform_, staticVariance_;
+            bool enableDebug_, enablePublishTF_, staticBaseCameraTransform_, staticVariance_,staticMarker_;
             std::string markerTFName_, cameraTFName_, mapTFName_, baseTFName_;
             tf::TransformListener transformListener_;
             tf::StampedTransform baseCameraTransform_;
+            std::vector<tf::StampedTransform> staticMarkersTransforms_;
             std::vector<double> varianceValues_;
+            std::vector<int> staticMarkersId_;
             std::deque<tf::Transform> oldCameraTransforms_;
             
             void estimateCameraPositions(bir::MarkerPose& marker_poses,

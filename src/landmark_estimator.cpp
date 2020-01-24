@@ -20,7 +20,6 @@ int main(int argc, char* argv[]) {
                 bir::MarkerPose markersPose;
                 tf::Transform baseTransform;
                 singleMarkerIdentifier.estimatePose(detectMarkers, markersPose);
-                
                 fullMarkerEstimator.estimatePose(markersPose, baseTransform);
                 fullMarkerEstimator.publish(baseTransform);
                 uint64_t finalTime = ros::Time::now().toNSec();
