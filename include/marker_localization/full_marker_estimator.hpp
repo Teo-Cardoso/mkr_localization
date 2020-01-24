@@ -8,6 +8,7 @@
 #include <deque>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <marker_localization/single_marker_identification.hpp>
+#include <boost/array.hpp>
 namespace bir {
 
     struct MarkerPose;

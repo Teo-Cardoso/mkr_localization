@@ -163,6 +163,11 @@ void bir::FullMarkerEstimator::publish(const tf::Transform& base_transform) { //
     basePoseMsg.pose.pose.orientation.x = base_transform.getRotation().x();
     basePoseMsg.pose.pose.orientation.y = base_transform.getRotation().y();
     basePoseMsg.pose.pose.orientation.z = base_transform.getRotation().z();
+    
+    boost::array<double, 36> varianceValuesArray;
+    for(int index = 0; index < 36; index++) varianceValuesArray.at(index) = varianceValues_.at(index);
+
+    basePoseMsg.pose.covariance = varianceValuesArray;
 
     posePublisher_.publish(basePoseMsg);
 }
