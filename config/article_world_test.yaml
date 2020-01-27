@@ -9,7 +9,7 @@ camera_matrix: [530.4669406576809, 0.0, 320.5, 0.0, 530.4669406576809, 240.5, 0.
 camera_distortion: [0.0, 0.0, 0.0, 0.0, 0.0]
 static_variance: true
 static_camera_transform: true
-static_marker: true
+static_marker: false
 static_markers_id: [2, 4, 6, 8]
 map_tf_name: world
 base_tf_name: base_footprint
