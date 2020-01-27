@@ -10,6 +10,10 @@ Localization problem is one of the most commom in robotics. This package was mad
 
 There are two ways two use this package. You can either try to locate your robot or a structure in the enviroment. There are below two graphic representation for these cases. The graph's arrows represents tf connections from parent to child. Blue means that is a known tf, pink 
 
+![image](lost_robot.png)
+
+![image](lost_structure.png)
+
 ## Getting Started
 
 Before get your hands dirty, you'll need to install some stuff. Please follow the instalation guide and you'll be all set!
@@ -56,15 +60,15 @@ Look up that 1.0 represents an integer 1.
 
 ### Overall types and default values table
 
-| Configuration Name:       | Type             | Example Value                             | Required param: |
-|---------------------------|------------------|-------------------------------------------|-----------------|
-| debug                     | bool             | true                                      | [ ]             |
-| pose_topic                | string           | zed_right_pose                            | [ ]             |
-| publish_frequecy          | int              | 60                                        | [ ]             |
-| enable_tf                 | bool             | true                                      | [ ]             |
-| camera_transform_name     | string           | zed_right_tf                              | [ ]             |
-| camera_reference_tf       | string           | world                                     | [ ]             |
-| camera_matrix             | vector of double | [fx, 0.0, cx, 0.0, fy, cy, 0.0, 0.0, 1.0] | [ ]             |
+| Configuration Name:       | Type             | Example Value                             | Required param:    |
+|---------------------------|------------------|-------------------------------------------|--------------------|
+| debug                     | bool             | true                                      | :white_check_mark: |
+| pose_topic                | string           | zed_right_pose                            | :x:                |
+| publish_frequecy          | int              | 60                                        | :x:                |
+| enable_tf                 | bool             | true                                      | [ ]                |
+| camera_transform_name     | string           | zed_right_tf                              | [ ]                |
+| camera_reference_tf       | string           | world                                     | [ ]                |
+| camera_matrix             | vector of double | [fx, 0.0, cx, 0.0, fy, cy, 0.0, 0.0, 1.0] | [ ]                |
 | camera_distortion         | vector of double | [k1, k2, k3, k4, k5]                      | [ ]             |
 | image_topic               | string           | /camera/right/image_raw                   | [ ]             |
 | marker_publish_topic_name | string           | /found_markers_right                      | [ ]             |
