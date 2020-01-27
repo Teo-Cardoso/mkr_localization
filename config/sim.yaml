@@ -1,7 +1,7 @@
 #Init Pose Configuration
 start_aruco_pose_estimate: true
 enable_tf: true
-pose_topic_name: /marker_localization/pose
+pose_topic: /marker_localization/pose
 debug: true
 
 # Image Topic / Camera 

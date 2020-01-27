@@ -13,10 +13,10 @@ bir::SingleMarkerIdentifier::SingleMarkerIdentifier(ros::NodeHandle& node): node
                                                                 "enable_tf did not found. Using default value: false");
     ROS_WARN_COND(!node_.param<int>("marker_dictionary", arucoDictionary, 16) && enableDebug_, 
                                            "marker_dictionary did not found. Using default value: Aruco Orignal [16]");
-    ROS_WARN_COND(!node_.param<std::string>("markerTF_name", markerTFName_, "id_") && enableDebug_, 
+    ROS_WARN_COND(!node_.param<std::string>("marker_tf_name", markerTFName_, "id_") && enableDebug_, 
                                                                "markerTFName did not found. Using default value: id_");
-    ROS_WARN_COND(!node_.param<std::string>("cameraTF_name", cameraTFName_, "/camera_link") && enableDebug_, 
-                                                     "cameraTF_name did not found. Using default value: /camera_link");
+    ROS_WARN_COND(!node_.param<std::string>("camera_tf_name", cameraTFName_, "/camera_link") && enableDebug_, 
+                                                     "camera_tf_name did not found. Using default value: /camera_link");
 
     initializeMarkersLists();
     initializeCameraParameters();

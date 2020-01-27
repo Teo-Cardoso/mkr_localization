@@ -15,16 +15,16 @@ bir::FullMarkerEstimator::FullMarkerEstimator(ros::NodeHandle& node):
                                                           "static_variance did not found. Using default value: false");
     ROS_WARN_COND(!node_.param<bool>("static_camera_transform", staticBaseCameraTransform_, false) && enableDebug_, 
                                                   "static_camera_transform did not found. Using default value: false");
-    ROS_WARN_COND(!node_.param<std::string>("mapTF_name", mapTFName_, "map") && enableDebug_,
+    ROS_WARN_COND(!node_.param<std::string>("map_tf_name", mapTFName_, "map") && enableDebug_,
                                                                   "mapTFName did not found. Using default value: map");
-    ROS_WARN_COND(!node_.param<std::string>("baseTF_name", baseTFName_, "base_link") && enableDebug_,
+    ROS_WARN_COND(!node_.param<std::string>("base_tf_name", baseTFName_, "base_link") && enableDebug_,
                                                            "baseTFName did not found. Using default value: base_link");
-    ROS_WARN_COND(!node_.param<std::string>("markerTF_name", markerTFName_, "id_") && enableDebug_,
+    ROS_WARN_COND(!node_.param<std::string>("marker_tf_name", markerTFName_, "id_") && enableDebug_,
                                                                "markerTFName did not found. Using default value: id_");
-    ROS_WARN_COND(!node_.param<std::string>("cameraTF_name", cameraTFName_, "camera_optical_frame") && enableDebug_,
-                                             "cameraTF_name did not found. Using default value: camera_optical_frame");
-    ROS_WARN_COND(!node_.param<std::string>("poseTopic_name", posePublishTopic, "pose") && enableDebug_,
-                                                            "poseTopic_name did not found. Using default value: pose");   
+    ROS_WARN_COND(!node_.param<std::string>("camera_tf_name", cameraTFName_, "camera_optical_frame") && enableDebug_,
+                                             "camera_tf_name did not found. Using default value: camera_optical_frame");
+    ROS_WARN_COND(!node_.param<std::string>("pose_topic", posePublishTopic, "pose") && enableDebug_,
+                                                            "pose_topic did not found. Using default value: pose");   
     ROS_WARN_COND(!node_.param<bool>("static_marker", staticMarker_, false) && enableDebug_, 
                                                             "static_marker did not found. Using default value: false");    
            

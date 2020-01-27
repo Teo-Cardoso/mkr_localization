@@ -1,6 +1,6 @@
 start_aruco_pose_estimate: true
 debug: true
-pose_topic_name: zed_right_pose
+pose_topic: zed_right_pose
 enable_tf: true
 
 # Image Topic / Camera 
