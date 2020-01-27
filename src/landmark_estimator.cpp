@@ -3,11 +3,10 @@
 
 int main(int argc, char* argv[]) {
     ros::init(argc, argv, "full_marker_estimator", ros::init_options::AnonymousName);
-    ros::NodeHandle node;
     ros::NodeHandle privateNode("~");
     tf::TransformBroadcaster broadcaster;
-    bir::SingleMarkerIdentifier singleMarkerIdentifier(node);
-    bir::FullMarkerEstimator fullMarkerEstimator(node);
+    bir::SingleMarkerIdentifier singleMarkerIdentifier(privateNode);
+    bir::FullMarkerEstimator fullMarkerEstimator(privateNode);
 
     while(ros::ok()) {
         ros::spinOnce();

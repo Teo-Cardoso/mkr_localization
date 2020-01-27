@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="config_file" default="$(find bir_marker_localization)/config/default.yaml"/>
+    <node respawn="true" pkg="bir_marker_localization" type="landmarks_pose_estimator" name="marker_localization" output="screen">
+        <rosparam file="$(arg config_file)" command="load"/>
+    </node>        
+</launch>
