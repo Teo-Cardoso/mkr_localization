@@ -5,38 +5,6 @@
 #include <vector>
 #include <numeric>
 namespace bir {
-    class Aruco {
-
-        public:
-            explicit Aruco(int dictionary = cv::aruco::DICT_ARUCO_ORIGINAL);
-            virtual ~Aruco();
-
-            struct markers {
-                std::vector<int> id;
-                std::vector<std::vector<cv::Point2f>> corner;
-                std::vector<std::vector<cv::Point2f>> rejected;
-                std::vector<double> area;
-                double totalArea;
-                int size;
-
-                bool drawTo(cv::Mat&);
-                void clean();
-                void push_back(markers&, unsigned int index);
-                bool operator ==(const int& id);
-                int operator[](const int& id);
-            };
-                       
-            void setParameters(cv::Ptr<cv::aruco::DetectorParameters>);
-            void setPredefinedDictionary(int);
-            void setCustomDictionary(int, int);
-            bool draw(cv::Mat&, markers);
-            markers operator()(const cv::Mat&, cv::Point2f offset = cv::Point2f(0.0, 0.0));
-
-        private:
-            cv::Ptr<cv::aruco::DetectorParameters> _parameters;
-            cv::Ptr<cv::aruco::Dictionary> _dictionary;
-    };
-
     class MarkerVector; // Forward declaration of MarkerVector
     class ArucoDetector {
 
