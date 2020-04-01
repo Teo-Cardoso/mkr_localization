@@ -26,7 +26,7 @@ This package allows you to subscribe to a topic that publish the green arrow or 
 ## Getting Started
 
 Before get your hands dirty, you'll need to install some stuff. Please follow the instalation guide and you'll be all set!
-
+https://github.com/Brazilian-Institute-of-Robotics/bir_marker_localization.git
 ### Prerequisites
 
 - #### [ROS](<http://wiki.ros.org/ROS/Installation>)
@@ -42,7 +42,7 @@ A step by step series of examples that tell you how to get a development env run
 #### Download the Package
 
 ```sh
-~/catkin_ws/src$ git clone -b develop https://github.com/Brazilian-Institute-of-Robotics/msub_marker_localization.git
+~/catkin_ws/src$ git clone -b develop https://github.com/Brazilian-Institute-of-Robotics/bir_marker_localization.git
 ```
 
 #### Download the Package ROS Dependencies
@@ -65,7 +65,7 @@ A step by step series of examples that tell you how to get a development env run
 
 Inside config folder there is a default config file. It's possible create how many as needed.
 
-Important: Some variable set are float and double, so make sure that in these cases you put a floating point.
+Important: Some variable set are float, so make sure that in these cases you put a floating point.
 
 > Example: params vector: [1.0, 2.0, 3.0]
 
@@ -87,14 +87,14 @@ Look up that 1.0 represents an integer 1.
 | camera_distortion         | vector of double | [k1, k2, k3, k4, k5]                      | :x:                 |
 | image_topic               | string           | /camera/rgb/image_raw                     | :heavy_check_mark:  |
 | marker_dictionary         | int              | 11                                        | :heavy_check_mark:  |
-| markers_length            | vector of double | [150]                                     | :heavy_check_mark:  |
-| markers_                  | vector of double | [0.0, 1.0, 2.0, 3.0]                      | :heavy_check_mark:  |
+| markers_length            | vector of int    | [150]                                     | :heavy_check_mark:  |
+| markers_                  | vector of int    | [0.0, 1.0, 2.0, 3.0]                      | :heavy_check_mark:  |
 | marker_tf_name            | string           | panelTF/aruco_6x6_                        | :x:                 |
 | static_camera_transform   | bool             | false                                     | :x:                 |
-| static_marker             | bool             | true                                     | :x:                 |
-| static_markers_id         | vector           | [2,4,6,8]                                 | :white_check_mark:\*|
+| static_marker             | bool             | true                                      | :x:                 |
+| static_markers_id         | vector of int    | [2,4,6,8]                                 | :white_check_mark:\*|
 | static_variance           | bool             | false                                     | :x:                 |
-| variance_matrix           | vector           | identity matrix*0.01 6x6                  | :white_check_mark:\*|
+| variance_matrix           | vector of double | identity matrix*0.01 6x6                  | :white_check_mark:\*|
 
 > variance_matrix is only required if static_variance is false
 > static_markers_id is only required if static_marker is true
