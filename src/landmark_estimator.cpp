@@ -15,19 +15,17 @@ int main(int argc, char* argv[]) {
             bir::MarkerVector detectMarkers = singleMarkerIdentifier.detectMarkers();
 
             if(!detectMarkers.empty()) {
-                uint64_t initTime = ros::Time::now().toNSec();
+                // uint64_t initTime = ros::Time::now().toNSec();
                 bir::MarkerPose markersPose;
                 tf::Transform baseTransform;
                 singleMarkerIdentifier.estimatePose(detectMarkers, markersPose);
                 fullMarkerEstimator.estimatePose(markersPose, baseTransform);
                 fullMarkerEstimator.publish(baseTransform);
-                uint64_t finalTime = ros::Time::now().toNSec();
+                // uint64_t finalTime = ros::Time::now().toNSec();
                 
-                ROS_WARN_STREAM("Duration: " << std::to_string((double)((finalTime-initTime))*1e-6) << "ms.");
+                // ROS_WARN_STREAM("Duration: " << std::to_string((double)((finalTime-initTime))*1e-6) << "ms.");
+                ROS_INFO_ONCE("\nLocalization is working properly! Did you found your robot? Good Luck!");
             }
-            
         }
-        ROS_INFO_ONCE("\nLocalization is working properly! Did you found your robot? Good Luck!");
     }
-
 }

@@ -96,7 +96,7 @@ void bir::SingleMarkerIdentifier::getRotationAndTranslationValues(bir::MarkerVec
         fillUpCorner(marker_vector, categorie_list.second, corner, ids_orders);
         std::vector<cv::Vec3d> rotation_values, translation_values;
         cv::aruco::estimatePoseSingleMarkers(corner, 1e-3*categorie_list.first, cameraMatrix_, distCoeffs_,
-                                                    /* Convert mm to cm */        rotation_values, translation_values);
+                                                    /* Convert mm to m */        rotation_values, translation_values);
         
         for(auto singleCorner : corner) area.push_back(cv::contourArea(singleCorner));
         p_rotation_values.insert(std::end(p_rotation_values), std::begin(rotation_values), std::end(rotation_values));

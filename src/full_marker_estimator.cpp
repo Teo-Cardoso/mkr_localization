@@ -41,7 +41,7 @@ bir::FullMarkerEstimator::FullMarkerEstimator(ros::NodeHandle& node):
                 ROS_ASSERT_MSG(
                     transformListener_.waitForTransform(mapTFName_,  markerTFName_ + std::to_string(index), 
                     ros::Time(0), ros::Duration(1)), 
-                              "Some static aruco is not conected. Please check your launch file.\n Try: rqt_tf_tree.");
+                              "Some static aruco is not connected. Please check your launch file.\n Try: rqt_tf_tree.");
                 transformListener_.lookupTransform(mapTFName_, (markerTFName_ + std::to_string(index)), 
                                                                                         ros::Time(0), markerTransform);
                 staticMarkersTransforms_.push_back(markerTransform);
@@ -54,13 +54,13 @@ bir::FullMarkerEstimator::FullMarkerEstimator(ros::NodeHandle& node):
     if(staticBaseCameraTransform_) {
         try {
             ROS_ASSERT_MSG(
-                transformListener_.waitForTransform(cameraTFName_, baseTFName_, ros::Time(0), ros::Duration(1)),
+                transformListener_.waitForTransform(cameraTFName_, baseTFName_, ros::Time(0), ros::Duration(2)),
                         "Camera and Base are not connected. Please check them transforms names. \n Try: rqt_tf_tree.");
                 transformListener_.lookupTransform(cameraTFName_, baseTFName_, ros::Time(0), baseCameraTransform_);
         } catch (tf::ExtrapolationException &e) {
             ROS_ERROR_STREAM_COND(enableDebug_, e.what());
             ROS_ASSERT_MSG(
-                transformListener_.waitForTransform(cameraTFName_, baseTFName_, ros::Time(0), ros::Duration(0.05)),
+                transformListener_.waitForTransform(cameraTFName_, baseTFName_, ros::Time(0), ros::Duration(2)),
                         "Camera and Base are not connected. Please check them transforms names. \n Try: rqt_tf_tree.");
         }
     }
@@ -82,13 +82,13 @@ void bir::FullMarkerEstimator::estimatePose(bir::MarkerPose& marker_poses, tf::T
         tf::StampedTransform baseCameraTransform;
         try {
             ROS_ASSERT_MSG(
-                transformListener_.waitForTransform(cameraTFName_, baseTFName_, ros::Time(0), ros::Duration(0.05)),
+                transformListener_.waitForTransform(cameraTFName_, baseTFName_, ros::Time(0), ros::Duration(0.5)),
                         "Camera and Base are not connected. Please check them transforms names. \n Try: rqt_tf_tree.");
                 transformListener_.lookupTransform(cameraTFName_, baseTFName_, ros::Time(0), baseCameraTransform);
         } catch (tf::ExtrapolationException &e) {
             ROS_ERROR_STREAM_COND(enableDebug_, e.what());
             ROS_ASSERT_MSG(
-                transformListener_.waitForTransform(cameraTFName_, baseTFName_, ros::Time(0), ros::Duration(0.05)),
+                transformListener_.waitForTransform(cameraTFName_, baseTFName_, ros::Time(0), ros::Duration(0.5)),
                         "Camera and Base are not connected. Please check them transforms names. \n Try: rqt_tf_tree.");
         }
         
@@ -180,7 +180,7 @@ void bir::FullMarkerEstimator::getCameraPoseAverage(
 
 void bir::FullMarkerEstimator::publish(const tf::Transform& base_transform) { //TODO: Add TF Broadcaster
     if(oldCameraTransforms_.size() > 10) oldCameraTransforms_.pop_front();
-    oldCameraTransforms_.push_back(base_transform);
+        oldCameraTransforms_.push_back(base_transform);
     
     if(!staticVariance_) { // Compute the new variance
         varianceValues_ = computeCovarianceMatrix(oldCameraTransforms_);
