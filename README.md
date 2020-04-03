@@ -31,9 +31,33 @@ https://github.com/Brazilian-Institute-of-Robotics/bir_marker_localization.git
 
 - #### [ROS](<http://wiki.ros.org/ROS/Installation>)
 
-- #### [OpenCV 3.3.1](https://www.learnopencv.com/install-opencv3-on-ubuntu/)
+- #### [OpenCV 3.3.1](<https://docs.opencv.org/3.3.1/d7/d9f/tutorial_linux_install.html>)
+From GitHub releases, donwload OpenCV source code [here](https://github.com/opencv/opencv/archive/3.3.1.tar.gz) and follow these steps:
 
-> Make sure that ros is working with this opencv version, otherwise during compilation of older opencv the compiler will report that it didn't find cornerRefinementMethod
+- Create a temporary directory:
+    ```sh
+    cd ~/opencv
+    tar -zxvf 3.3.1.tar.gz
+    mkdir build
+    cd build
+    ```
+
+- Run cmake:
+    ```sh
+    cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local ..
+    ```
+
+- Build in several threads:
+    ```sh
+    make -j6 # runs 6 jobs in parallel.
+    ```
+
+- Install libraries:
+    ```sh
+    sudo make install
+    ```
+
+> Make sure that ROS is working with this OpenCV version, otherwise during compilation of older OpenCV the compiler will report it didn't find `cornerRefinementMethod`
 
 ### Installing
 
