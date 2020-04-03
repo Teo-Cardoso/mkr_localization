@@ -32,7 +32,7 @@ https://github.com/Brazilian-Institute-of-Robotics/bir_marker_localization.git
 - #### [ROS](<http://wiki.ros.org/ROS/Installation>)
 
 - #### [OpenCV 3.3.1](<https://docs.opencv.org/3.3.1/d7/d9f/tutorial_linux_install.html>)
-From GitHub releases, donwload OpenCV source code [here](https://github.com/opencv/opencv/archive/3.3.1.tar.gz) and follow these steps:
+From GitHub releases, download OpenCV source code [here](https://github.com/opencv/opencv/archive/3.3.1.tar.gz) and follow these steps:
 
 - Create a temporary directory:
     ```sh
