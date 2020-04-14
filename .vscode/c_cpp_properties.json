@@ -6,19 +6,9 @@
                 "limitSymbolsToIncludedHeaders": true
             },
             "includePath": [
-                "/home/teo/Documents/manisub/devel/include/**",
                 "/opt/ros/kinetic/include/**",
-                "/home/teo/Documents/manisub/src/bir_marker_localization/include/**",
-                "/home/teo/Documents/manisub/src/kinova-ros/kinova_moveit/inverse_kinematics_plugins/ikfast/j2n6s300_ikfast/include/**",
-                "/home/teo/Documents/manisub/src/kinova-ros/kinova_moveit/inverse_kinematics_plugins/ikfast/j2s6s300_ikfast/include/**",
-                "/home/teo/Documents/manisub/src/kinova-ros/kinova_moveit/inverse_kinematics_plugins/ikfast/j2s7s300_ikfast/include/**",
-                "/home/teo/Documents/manisub/src/kinova-ros/kinova_moveit/kinova_arm_moveit_demo/include/**",
-                "/home/teo/Documents/manisub/src/kinova-ros/kinova_driver/include/**",
-                "/home/teo/Documents/manisub/src/kinova-ros/kinova_moveit/inverse_kinematics_plugins/ikfast/m1n6s300_ikfast/include/**",
-                "/home/teo/Documents/manisub/src/msub_gui/include/**",
-                "/home/teo/Documents/manisub/src/msub_msgs/include/**",
-                "/home/teo/Documents/manisub/src/msub_poc_manip/include/**",
-                "/usr/include/**"
+                "/usr/include/**",
+                "${workspaceFolder}/include"
             ],
             "name": "ROS",
             "intelliSenseMode": "gcc-x64",

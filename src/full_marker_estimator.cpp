@@ -11,6 +11,8 @@ bir::FullMarkerEstimator::FullMarkerEstimator(ros::NodeHandle& node):
     node_.param<bool>("debug", enableDebug_, false);
     ROS_WARN_COND(!node_.param<bool>("enable_tf", enablePublishTF_, false) && enableDebug_, 
                                                                 "enable_tf did not found. Using default value: false");
+    ROS_WARN_COND(!node_.param<bool>("robot_as_parent", robotAsParent_, false) && enableDebug_, 
+                                                          "robot_as_parent did not found. Using default value: false");
     ROS_WARN_COND(!node_.param<bool>("static_variance", staticVariance_, false) && enableDebug_, 
                                                           "static_variance did not found. Using default value: false");
     ROS_WARN_COND(!node_.param<bool>("static_camera_transform", staticBaseCameraTransform_, false) && enableDebug_, 
@@ -26,7 +28,8 @@ bir::FullMarkerEstimator::FullMarkerEstimator(ros::NodeHandle& node):
     ROS_WARN_COND(!node_.param<std::string>("pose_topic", posePublishTopic, "pose") && enableDebug_,
                                                             "pose_topic did not found. Using default value: pose");   
     ROS_WARN_COND(!node_.param<bool>("static_marker", staticMarker_, false) && enableDebug_, 
-                                                            "static_marker did not found. Using default value: false");    
+                                                            "static_marker did not found. Using default value: false");   
+                                                                   
            
     posePublisher_ = node_.advertise<geometry_msgs::PoseWithCovarianceStamped>(posePublishTopic, 5);
     if(staticVariance_) {

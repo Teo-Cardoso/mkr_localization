@@ -1,10 +1,10 @@
 debug: true
 image_topic: /camera/rgb/image_raw
-enable_tf: false
+enable_tf: true
+robot_as_parent: false
 marker_dictionary: 11
 markers_length: [150] # length in mm.
 markers_150: [1, 2, 3, 4, 5, 6, 7, 8] # Markers id with length 150.
-marker_tf_name: id_
 camera_matrix: [530.4669406576809, 0.0, 320.5, 0.0, 530.4669406576809, 240.5, 0.0, 0.0, 1.0]
 camera_distortion: [0.0, 0.0, 0.0, 0.0, 0.0]
 static_variance: false

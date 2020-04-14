@@ -21,11 +21,15 @@ namespace bir {
             
             void estimatePose(bir::MarkerPose&, tf::Transform&);
             void publish(const tf::Transform&);
-
+            inline bool getEnablePublishTF() {return enablePublishTF_;}
+            inline bool getRobotAsParent() {return robotAsParent_;}
+            inline const std::string& getMapTFName() {return mapTFName_;}
+            inline const std::string& getBaseTFName() {return baseTFName_;}
         private:
             ros::NodeHandle node_;
             ros::Publisher posePublisher_;
-            bool enableDebug_, enablePublishTF_, staticBaseCameraTransform_, staticVariance_,staticMarker_;
+            bool enableDebug_, enablePublishTF_, robotAsParent_, staticBaseCameraTransform_, staticVariance_;
+            bool staticMarker_;
             std::string markerTFName_, cameraTFName_, mapTFName_, baseTFName_;
             tf::TransformListener transformListener_;
             tf::StampedTransform baseCameraTransform_;

@@ -80,6 +80,7 @@ Look up that 1.0 represents an integer 1.
 | debug                     | bool             | true                                      | :heavy_check_mark:  |
 | pose_topic                | string           | pose                                      | :x:                 |
 | enable_tf                 | bool             | true                                      | :x:                 |
+| robot_as_parent           | bool             | true                                      | :x:                 |
 | camera_tf_name            | string           | camera_rgb_optical_frame                  | :heavy_check_mark:  |
 | map_tf_name               | string           | world                                     | :heavy_check_mark:  |
 | base_tf_name              | string           | base_footprint                            | :heavy_check_mark:  |
@@ -109,6 +110,9 @@ Look up that 1.0 represents an integer 1.
 
 1. enable_tf
     - If true, it will also link your robot pose in tf tree, else it will only publish in specified pose_topic
+
+1. robot_as_parent
+    - If true, it will also link your robot pose in tf tree as the parent of the map, otherwise, it will be published as a child frame. If enable_tf is false this parameter has no effect.
 
 1. camera_tf_name
     - Is exactly what you think! The name of your camera tf.

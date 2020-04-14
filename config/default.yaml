@@ -1,6 +1,7 @@
 debug: true
 pose_topic: pose
 enable_tf: false
+robot_as_parent: true
 camera_tf_name: camera_optical_frame
 map_tf_name: map
 base_tf_name: base_link
