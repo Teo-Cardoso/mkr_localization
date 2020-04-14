@@ -29,9 +29,11 @@ bir::FullMarkerEstimator::FullMarkerEstimator(ros::NodeHandle& node):
                                                             "pose_topic did not found. Using default value: pose");   
     ROS_WARN_COND(!node_.param<bool>("static_marker", staticMarker_, false) && enableDebug_, 
                                                             "static_marker did not found. Using default value: false");   
-                                                                   
-           
+                                                                              
     posePublisher_ = node_.advertise<geometry_msgs::PoseWithCovarianceStamped>(posePublishTopic, 5);
+
+    ros::spinOnce();
+
     if(staticVariance_) {
         ROS_ASSERT_MSG(node_.getParam("variance_matrix", varianceValues_), 
                        "variance_matrix did not found. \nPlease fill it up the variance_matrix into rosparam server.");
@@ -44,7 +46,7 @@ bir::FullMarkerEstimator::FullMarkerEstimator(ros::NodeHandle& node):
                 ROS_ASSERT_MSG(
                     transformListener_.waitForTransform(mapTFName_,  markerTFName_ + std::to_string(index), 
                     ros::Time(0), ros::Duration(1)), 
-                              "Some static aruco is not connected. Please check your launch file.\n Try: rqt_tf_tree.");
+                    "Some static aruco is not connected. Please check your launch file.\n Try: rqt_tf_tree.");
                 transformListener_.lookupTransform(mapTFName_, (markerTFName_ + std::to_string(index)), 
                                                                                         ros::Time(0), markerTransform);
                 staticMarkersTransforms_.push_back(markerTransform);
@@ -93,10 +95,11 @@ void bir::FullMarkerEstimator::estimatePose(bir::MarkerPose& marker_poses, tf::T
             ROS_ASSERT_MSG(
                 transformListener_.waitForTransform(cameraTFName_, baseTFName_, ros::Time(0), ros::Duration(0.5)),
                         "Camera and Base are not connected. Please check them transforms names. \n Try: rqt_tf_tree.");
-        }
-        
+        }        
         base_transform = (cameraTransform * baseCameraTransform);
     }
+
+    base_transform.setRotation(base_transform.getRotation().normalized());
 }
 
 void bir::FullMarkerEstimator::estimateCameraPositions(bir::MarkerPose& marker_poses, 

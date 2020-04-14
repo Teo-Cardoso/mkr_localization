@@ -25,11 +25,11 @@ int main(int argc, char* argv[]) {
                 if(fullMarkerEstimator.getEnablePublishTF()) {
                     tf::StampedTransform transform;
                     if(!fullMarkerEstimator.getRobotAsParent()) {
-                        transform = tf::StampedTransform(baseTransform, ros::Time::now(), 
-                                            fullMarkerEstimator.getBaseTFName(), fullMarkerEstimator.getMapTFName());
-                    } else {
-                        transform = tf::StampedTransform(baseTransform, ros::Time::now(), 
+                        transform = tf::StampedTransform(baseTransform, ros::Time::now(),
                                             fullMarkerEstimator.getMapTFName(), fullMarkerEstimator.getBaseTFName());
+                    } else {
+                        transform = tf::StampedTransform(baseTransform.inverse(), ros::Time::now(), 
+                                            fullMarkerEstimator.getBaseTFName(), fullMarkerEstimator.getMapTFName());                                            
                     }
                     broadcaster.sendTransform(transform);
                 }
