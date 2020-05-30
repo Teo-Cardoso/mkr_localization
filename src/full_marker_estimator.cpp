@@ -92,9 +92,6 @@ void bir::FullMarkerEstimator::estimatePose(bir::MarkerPose& marker_poses, tf::T
                 transformListener_.lookupTransform(cameraTFName_, baseTFName_, ros::Time(0), baseCameraTransform);
         } catch (tf::ExtrapolationException &e) {
             ROS_ERROR_STREAM_COND(enableDebug_, e.what());
-            ROS_ASSERT_MSG(
-                transformListener_.waitForTransform(cameraTFName_, baseTFName_, ros::Time(0), ros::Duration(0.5)),
-                        "Camera and Base are not connected. Please check them transforms names. \n Try: rqt_tf_tree.");
         }        
         base_transform = (cameraTransform * baseCameraTransform);
     }

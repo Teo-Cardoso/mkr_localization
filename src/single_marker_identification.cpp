@@ -2,20 +2,24 @@
 
 tf::Quaternion quaternionFromVec3(const cv::Vec3d&);
 
-bir::SingleMarkerIdentifier::SingleMarkerIdentifier(ros::NodeHandle& node): node_(node), imgTransport_(node_) {
+bir::SingleMarkerIdentifier::SingleMarkerIdentifier(ros::NodeHandle& node, ros::NodeHandle& private_node): 
+    node_(node), 
+    privateNode_(private_node),
+    imgTransport_(node_)
+{
     std::string imageTopic;
     int arucoDictionary;
     
-    node_.param<bool>("debug", enableDebug_, false);
-    ROS_WARN_COND(!node_.param<std::string>("image_topic", imageTopic, "/cv_camera/image_raw") && enableDebug_, 
+    privateNode_.param<bool>("debug", enableDebug_, false);
+    ROS_WARN_COND(!privateNode_.param<std::string>("image_topic", imageTopic, "/cv_camera/image_raw") && enableDebug_, 
                                                "image_topic did not found. Using default value: /cv_camera/image_raw");
-    ROS_WARN_COND(!node_.param<bool>("enable_tf", enablePublishTF_, false) && enableDebug_, 
+    ROS_WARN_COND(!privateNode_.param<bool>("enable_tf", enablePublishTF_, false) && enableDebug_, 
                                                                 "enable_tf did not found. Using default value: false");
-    ROS_WARN_COND(!node_.param<int>("marker_dictionary", arucoDictionary, 16) && enableDebug_, 
+    ROS_WARN_COND(!privateNode_.param<int>("marker_dictionary", arucoDictionary, 16) && enableDebug_, 
                                            "marker_dictionary did not found. Using default value: Aruco Orignal [16]");
-    ROS_WARN_COND(!node_.param<std::string>("marker_tf_name", markerTFName_, "id_") && enableDebug_, 
+    ROS_WARN_COND(!privateNode_.param<std::string>("marker_tf_name", markerTFName_, "id_") && enableDebug_, 
                                                                "markerTFName did not found. Using default value: id_");
-    ROS_WARN_COND(!node_.param<std::string>("camera_tf_name", cameraTFName_, "/camera_link") && enableDebug_, 
+    ROS_WARN_COND(!privateNode_.param<std::string>("camera_tf_name", cameraTFName_, "/camera_link") && enableDebug_, 
                                                      "camera_tf_name did not found. Using default value: /camera_link");
 
     initializeMarkersLists();
@@ -122,7 +126,7 @@ void bir::SingleMarkerIdentifier::fillUpCorner(bir::MarkerVector& marker_vector,
 
 void bir::SingleMarkerIdentifier::initializeMarkersLists() {
     std::vector<int> lengths;
-    ROS_ASSERT_MSG(node_.getParam("markers_length", lengths), 
+    ROS_ASSERT_MSG(privateNode_.getParam("markers_length", lengths), 
                          "markers_length did not found. \nPlease fill it up the markers_length into rosparam server.");
     std::vector<int>::iterator it = 
                            std::find_if(std::begin(lengths), std::end(lengths), [](int element){return element <= 0;});
@@ -132,7 +136,7 @@ void bir::SingleMarkerIdentifier::initializeMarkersLists() {
     const char* ERROR = "Some markers_{LENGTH} did not found. Please fill it up into rosparam server.";
     for(int length : lengths) {
         std::vector<int> markersIDs;
-        ROS_ASSERT_MSG(node_.getParam("markers_" + std::to_string(length), markersIDs), ERROR);
+        ROS_ASSERT_MSG(privateNode_.getParam("markers_" + std::to_string(length), markersIDs), ERROR);
         expectedMarkers_.push_back(std::make_pair(length, markersIDs));
     }
 
@@ -142,9 +146,9 @@ void bir::SingleMarkerIdentifier::initializeMarkersLists() {
 
 void bir::SingleMarkerIdentifier::initializeCameraParameters() {
     std::vector<double> cameraMatrixValuesVector, distortionCoefficientsVector;
-    ROS_ASSERT_MSG(node_.getParam("camera_matrix", cameraMatrixValuesVector), 
+    ROS_ASSERT_MSG(privateNode_.getParam("camera_matrix", cameraMatrixValuesVector), 
                            "camera_matrix did not found. \nPlease fill it up the camera_matrix into rosparam server.");
-    ROS_ASSERT_MSG(node_.getParam("camera_distortion", distortionCoefficientsVector), 
+    ROS_ASSERT_MSG(privateNode_.getParam("camera_distortion", distortionCoefficientsVector), 
                    "camera_distortion did not found. \nPlease fill it up the camera_distortion into rosparam server.");
     cameraMatrix_ = (cv::Mat1d(3, 3) <<
                         cameraMatrixValuesVector[0],    0,                              cameraMatrixValuesVector[2], 

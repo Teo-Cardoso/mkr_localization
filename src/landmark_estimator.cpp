@@ -3,10 +3,11 @@
 #include <tf/transform_broadcaster.h>
 
 int main(int argc, char* argv[]) {
-    ros::init(argc, argv, "full_marker_estimator", ros::init_options::AnonymousName);
+    ros::init(argc, argv, "full_marker_estimator");
+    ros::NodeHandle node;
     ros::NodeHandle privateNode("~");
     tf::TransformBroadcaster broadcaster;
-    bir::SingleMarkerIdentifier singleMarkerIdentifier(privateNode);
+    bir::SingleMarkerIdentifier singleMarkerIdentifier(node, privateNode);
     bir::FullMarkerEstimator fullMarkerEstimator(privateNode);
 
     while(ros::ok()) {

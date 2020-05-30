@@ -25,14 +25,14 @@ namespace bir {
 
     class SingleMarkerIdentifier {
         public:
-        explicit SingleMarkerIdentifier(ros::NodeHandle&);
+        explicit SingleMarkerIdentifier(ros::NodeHandle&, ros::NodeHandle&);
         bool update_is_available() {return update_;}
         
         bir::MarkerVector detectMarkers();
         void estimatePose(bir::MarkerVector&, bir::MarkerPose&);
         
         private:
-        ros::NodeHandle node_;
+        ros::NodeHandle& node_, privateNode_;
         image_transport::ImageTransport imgTransport_;
         image_transport::Subscriber subImageTopic_;
         bir::ArucoDetector arucoDetector_;

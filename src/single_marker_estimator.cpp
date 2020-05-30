@@ -3,9 +3,10 @@
 
 int main(int argc, char* argv[]) {
     ros::init(argc, argv, "single_marker_identification", ros::init_options::AnonymousName);
+    ros::NodeHandle node;
     ros::NodeHandle privateNode("~");
     tf::TransformBroadcaster broadcaster;
-    bir::SingleMarkerIdentifier singleMarkerIdentifier(privateNode);
+    bir::SingleMarkerIdentifier singleMarkerIdentifier(node, privateNode);
 
     while(ros::ok()) {
         ros::spinOnce();

@@ -6,6 +6,7 @@
 #include <numeric>
 namespace bir {
     class MarkerVector; // Forward declaration of MarkerVector
+    
     class ArucoDetector {
 
         public:
