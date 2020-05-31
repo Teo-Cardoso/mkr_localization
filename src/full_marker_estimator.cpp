@@ -3,7 +3,8 @@
 std::vector<double> computeCovarianceMatrix(const std::deque<tf::Transform>& transform_raw);
 
 bir::FullMarkerEstimator::FullMarkerEstimator(ros::NodeHandle& node): 
-    node_(node)
+    node_(node),
+    transformListener_(node)
 {
     std::string posePublishTopic;
     tf::StampedTransform markerTransform;
@@ -31,7 +32,6 @@ bir::FullMarkerEstimator::FullMarkerEstimator(ros::NodeHandle& node):
                                                             "static_marker did not found. Using default value: false");   
                                                                               
     posePublisher_ = node_.advertise<geometry_msgs::PoseWithCovarianceStamped>(posePublishTopic, 5);
-
     ros::spinOnce();
 
     if(staticVariance_) {
@@ -56,17 +56,18 @@ bir::FullMarkerEstimator::FullMarkerEstimator(ros::NodeHandle& node):
             }
         }
     }
+
     if(staticBaseCameraTransform_) {
         try {
-            ROS_ASSERT_MSG(
-                transformListener_.waitForTransform(cameraTFName_, baseTFName_, ros::Time(0), ros::Duration(2)),
-                        "Camera and Base are not connected. Please check them transforms names. \n Try: rqt_tf_tree.");
-                transformListener_.lookupTransform(cameraTFName_, baseTFName_, ros::Time(0), baseCameraTransform_);
+            bool notConnected = false;
+            while(ros::ok() && !transformListener_.canTransform(cameraTFName_, baseTFName_, ros::Time(0))) {
+                notConnected = true;
+                ROS_WARN_ONCE("Camera and Base are not connected. Please check them names. Try: rqt_tf_tree.");
+            }
+            transformListener_.lookupTransform(cameraTFName_, baseTFName_, ros::Time(0), baseCameraTransform_);
+            ROS_WARN_STREAM_COND(notConnected, "Camera and Base are connected.");
         } catch (tf::ExtrapolationException &e) {
             ROS_ERROR_STREAM_COND(enableDebug_, e.what());
-            ROS_ASSERT_MSG(
-                transformListener_.waitForTransform(cameraTFName_, baseTFName_, ros::Time(0), ros::Duration(2)),
-                        "Camera and Base are not connected. Please check them transforms names. \n Try: rqt_tf_tree.");
         }
     }
 }
