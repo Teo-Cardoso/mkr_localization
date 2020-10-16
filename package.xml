@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>bir_marker_localization</name>
+  <name>marker_localization</name>
   <version>0.0.0</version>
   <description>The bir.marker_localization package</description>
 

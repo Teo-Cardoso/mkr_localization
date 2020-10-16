@@ -6,7 +6,7 @@
                 "limitSymbolsToIncludedHeaders": true
             },
             "includePath": [
-                "/opt/ros/kinetic/include/**",
+                "/opt/ros/noetic/include/**",
                 "/usr/include/**",
                 "${workspaceFolder}/include"
             ],
@@ -14,7 +14,7 @@
             "intelliSenseMode": "gcc-x64",
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
-            "cppStandard": "c++17"
+            "cppStandard": "c++11"
         }
     ],
     "version": 4
