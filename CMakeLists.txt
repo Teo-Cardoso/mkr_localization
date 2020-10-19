@@ -57,12 +57,14 @@ target_link_libraries(test_time
 
 if(CATKIN_ENABLE_TESTING)
 	add_definitions(-std=c++11)
-	
+
+
 	find_package(rostest REQUIRED)
 	catkin_add_gtest(marker_detect_test test/marker_detect_test.cpp src/marker_detect.cpp)
 	
 	if(TARGET marker_detect_test)
   	target_link_libraries(marker_detect_test libmarker_detect ${catkin_LIBRARIES} ${OpenCV_LIBS})
+	  target_compile_definitions(marker_detect_test PUBLIC TEST_RESOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/test/resources/")
 	endif()
         
 endif()

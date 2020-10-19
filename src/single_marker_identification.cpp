@@ -88,11 +88,11 @@ void bir::SingleMarkerIdentifier::estimatePose(bir::MarkerVector& marker_vector,
     }
 }
 
-void bir::SingleMarkerIdentifier::getRotationAndTranslationValues(bir::MarkerVector& marker_vector,
-                                                                             std::vector<cv::Vec3d>& p_rotation_values,
-                                                                          std::vector<cv::Vec3d>& p_translation_values,
-                                                                                             std::vector<double>& area,
-                                                                                          std::vector<int>& ids_orders)  
+void bir::SingleMarkerIdentifier::getRotationAndTranslationValues(  bir::MarkerVector& marker_vector,
+                                                                    std::vector<cv::Vec3d>& p_rotation_values,
+                                                                    std::vector<cv::Vec3d>& p_translation_values,
+                                                                    std::vector<double>& area,
+                                                                    std::vector<int>& ids_orders    )
 {
     if(marker_vector.empty()) return;
     for(auto categorie_list : expectedMarkers_) {
