@@ -34,9 +34,14 @@ bir::MarkersTransforms bir::MarkerPoseEstimator::estimatePose(const bir::MarkerV
     markers_transforms.areas.reserve(marker_vector.size());
     markers_transforms.ids.reserve(marker_vector.size());
 
-    getRotationAndTranslationValues(marker_vector, rotationValues, translationValues, markers_transforms.areas, markers_transforms.ids);
+    getRotationAndTranslationValues(marker_vector,
+                                    rotationValues,
+                                    translationValues,
+                                    markers_transforms.areas,
+                                    markers_transforms.ids  );
 
     const size_t markers_transforms_size = markers_transforms.size();
+    
     markers_transforms.transforms.reserve(markers_transforms_size);
     markers_transforms.projections_erro.reserve(markers_transforms_size);
 
@@ -53,8 +58,9 @@ bir::MarkersTransforms bir::MarkerPoseEstimator::estimatePose(const bir::MarkerV
         markers_transforms.transforms.push_back(std::move(transform));
         markers_transforms.projections_erro.push_back(0.00); //TODO
     }
-}
 
+    return markers_transforms;
+}
 
 void bir::MarkerPoseEstimator::getRotationAndTranslationValues( const bir::MarkerVector& marker_vector,
                                                                 std::vector<cv::Vec3d>& p_rotation_values,
