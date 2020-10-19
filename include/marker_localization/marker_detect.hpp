@@ -1,8 +1,8 @@
 #ifndef BIR_MARKER_DETECT_HPP
 #define BIR_MARKER_DETECT_HPP
 
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/aruco.hpp>
+#include <opencv4/opencv2/imgproc/imgproc.hpp>
+#include <opencv4/opencv2/aruco.hpp>
 #include <vector>
 #include <numeric>
 
@@ -18,9 +18,9 @@ namespace bir {
         const unsigned int id;
         const std::vector<cv::Point2f> corner;
         
-        double area() {return cv::contourArea(corner);};
-        bool operator==(int id);
-        bool operator==(Marker marker);
+        double area() const {return cv::contourArea(corner);};
+        bool operator==(int id) const;
+        bool operator==(Marker marker) const;
     };
 
     class MarkerVector {        
@@ -47,6 +47,7 @@ namespace bir {
         std::vector<std::vector<cv::Point2f>>& getCorners();
         std::vector<int>& getIDs();
         
+        MarkerVector& operator=(const MarkerVector&);
         MarkerVector& operator=(MarkerVector&&);
 
     private:

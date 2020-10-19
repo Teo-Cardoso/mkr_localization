@@ -43,15 +43,16 @@ bir::MarkerVector bir::MarkerDetect::detect(const cv::Mat& img, cv::Point2f offs
     if (img.empty()) return marker_vector;
     
     cv::aruco::detectMarkers(img, _dictionary, marker_vector.getCorners(), marker_vector.getIDs(), _parameters);
-
-    for(int index = 0; index < marker_vector.getIDs().size(); index++) {        
-        if(offset == cv::Point2f(0, 0))
-            continue;
-
-        for (int index_offset = 0; index_offset < 4; index_offset++) {
-            marker_vector.getCorners().at(index).at(index_offset) += offset;   // Add the offset take off from the image to the
-                                                            // corner. Needed because the marker position
-                                                            // is computed from the corner position.
+    
+    if(offset != cv::Point2f(0, 0)) {
+        for(int index = 0; index < marker_vector.getIDs().size(); index++) {        
+            for (int index_offset = 0; index_offset < 4; index_offset++) {
+                /*  
+                    Add the offset take off from the image to the  corner. 
+                    Needed because the marker position is computed from the corner position.
+                */
+                marker_vector.getCorners().at(index).at(index_offset) += offset;
+            }
         }
     }
     
@@ -82,11 +83,11 @@ bir::Marker::~Marker() {
     
 }
 
-bool bir::Marker::operator==(int id) {
+bool bir::Marker::operator==(int id) const {
     return (this->id == id);
 }
 
-bool bir::Marker::operator==(Marker marker) {
+bool bir::Marker::operator==(Marker marker) const {
     return (this->id == marker.id && this->corner == marker.corner);
 }
 
@@ -105,6 +106,12 @@ bir::MarkerVector::MarkerVector(bir::MarkerVector&& marker_vector) noexcept:
 {
     marker_vector.ids_.clear();
     marker_vector.corners_.clear();
+}
+
+bir::MarkerVector& bir::MarkerVector::operator=(const MarkerVector& marker_vector) {
+    ids_ = marker_vector.ids_;
+    corners_ = marker_vector.corners_;
+    return *this;
 }
 
 bir::MarkerVector& bir::MarkerVector::operator=(MarkerVector&& marker_vector)
