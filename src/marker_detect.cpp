@@ -4,10 +4,6 @@ bir::MarkerDetect* bir::MarkerDetect::markerDetect_ = nullptr;
 
 bir::MarkerDetect* bir::MarkerDetect::GetInstance(cv::aruco::PREDEFINED_DICTIONARY_NAME dictionary)
 {
-    /**
-     * This is a safer way to create an instance. instance = new Singleton is
-     * dangeruous in case two instance threads wants to access at the same time
-     */
     if(markerDetect_ == nullptr) {
         markerDetect_ = new MarkerDetect(dictionary);
     } else {
@@ -19,10 +15,6 @@ bir::MarkerDetect* bir::MarkerDetect::GetInstance(cv::aruco::PREDEFINED_DICTIONA
 
 bir::MarkerDetect* bir::MarkerDetect::GetInstance()
 {
-    /**
-     * This is a safer way to create an instance. instance = new Singleton is
-     * dangeruous in case two instance threads wants to access at the same time
-     */
     if(markerDetect_ == nullptr) {
         markerDetect_ = new MarkerDetect();
     }
@@ -45,22 +37,14 @@ void bir::MarkerDetect::setDictionary(cv::aruco::PREDEFINED_DICTIONARY_NAME dict
     _dictionary = cv::aruco::getPredefinedDictionary(dictionary);
 }
 
-#include <chrono>
-#include <iostream>
-
 bir::MarkerVector bir::MarkerDetect::detect(const cv::Mat& img, cv::Point2f offset) {
     MarkerVector marker_vector;
 
     if (img.empty()) return marker_vector;
     
-    std::vector<std::vector<cv::Point2f>> rejected;
+    cv::aruco::detectMarkers(img, _dictionary, marker_vector.getCorners(), marker_vector.getIDs(), _parameters);
 
-    cv::aruco::detectMarkers(img, _dictionary, marker_vector.getCorners(), marker_vector.getIDs(), _parameters, rejected);
-    marker_vector.getAreas().reserve(marker_vector.getIDs().size());
-
-    for(int index = 0; index < marker_vector.getIDs().size(); index++) {
-        marker_vector.getAreas().push_back(cv::contourArea(marker_vector.getCorners().at(index)));
-        
+    for(int index = 0; index < marker_vector.getIDs().size(); index++) {        
         if(offset == cv::Point2f(0, 0))
             continue;
 
@@ -74,28 +58,36 @@ bir::MarkerVector bir::MarkerDetect::detect(const cv::Mat& img, cv::Point2f offs
     return std::move(marker_vector);
 }
 
-bir::Marker::Marker() {
+bir::Marker::Marker():
+    id(),
+    corner()
+{
     
 }
 
-bir::Marker::Marker(const bir::Marker& marker) {
-    this->id_ = marker.id_;
-    this->corner_ = marker.corner_;
-    this->rejected_ = marker.rejected_;
+bir::Marker::Marker(const bir::Marker& marker):
+    id(marker.id),
+    corner(marker.corner)
+{
+
 }
 
-bir::Marker::Marker(int id, const std::vector<cv::Point2f>& corner, const std::vector<cv::Point2f>& rejected) {
-    this->id_ = id;
-    this->corner_ = corner;
-    this->rejected_ = rejected;
+bir::Marker::Marker(int id, const std::vector<cv::Point2f>& corner):
+    id(id),
+    corner(corner)
+{
 }
 
 bir::Marker::~Marker() {
     
 }
 
-bool bir::Marker::operator==(const int id) {
-    return (this->id_ == id);
+bool bir::Marker::operator==(int id) {
+    return (this->id == id);
+}
+
+bool bir::Marker::operator==(Marker marker) {
+    return (this->id == marker.id && this->corner == marker.corner);
 }
 
 bir::MarkerVector::MarkerVector() {
@@ -103,61 +95,66 @@ bir::MarkerVector::MarkerVector() {
 
 bir::MarkerVector::MarkerVector(const bir::MarkerVector& marker_vector):
     ids_(marker_vector.ids_),
-    corners_(marker_vector.corners_),
-    rejected_(marker_vector.rejected_),
-    areas_(marker_vector.areas_)
+    corners_(marker_vector.corners_)
 {
 }
 
 bir::MarkerVector::MarkerVector(bir::MarkerVector&& marker_vector) noexcept:
     ids_(std::move(marker_vector.ids_)),
-    corners_(std::move(marker_vector.corners_)),
-    rejected_(std::move(marker_vector.rejected_)),
-    areas_(std::move(marker_vector.areas_))
+    corners_(std::move(marker_vector.corners_))
 {
-    marker_vector.ids_ = std::vector<int>();
-    marker_vector.corners_ = std::vector<std::vector<cv::Point2f>>();
-    marker_vector.rejected_ = std::vector<std::vector<cv::Point2f>>();
-    marker_vector.areas_ = std::vector<double>();
+    marker_vector.ids_.clear();
+    marker_vector.corners_.clear();
 }
 
 bir::MarkerVector& bir::MarkerVector::operator=(MarkerVector&& marker_vector)
 {
-        ids_ = std::move(marker_vector.ids_),
-        corners_ = std::move(marker_vector.corners_),
-        rejected_ = std::move(marker_vector.rejected_),
-        areas_ = std::move(marker_vector.areas_);
-        return *this;
+    ids_ = std::move(marker_vector.ids_);
+    corners_ = std::move(marker_vector.corners_);
+    return *this;
+}
+
+bir::MarkerVector::MarkerVector(const std::vector<bir::Marker>& vector_of_markers) {
+    for (const Marker& marker : vector_of_markers) {
+        pushBack(marker);
+    }
 }
 
 bir::MarkerVector::MarkerVector(    std::vector<int>& ids,
-                                    std::vector<std::vector<cv::Point2f>>& corners, 
-                                    std::vector<std::vector<cv::Point2f>>& rejected,
-                                    std::vector<double>& areas  )
+                                    std::vector<std::vector<cv::Point2f>>& corners )
 {
     this->ids_ = std::move(ids);
     this->corners_ = std::move(corners);
-    this->rejected_ = std::move(rejected);
-    this->areas_ = std::move(areas);
 }
 
 bir::MarkerVector::~MarkerVector() {
 }
 
 bir::Marker bir::MarkerVector::at(const int index) { 
-    return bir::Marker(getIDs().at(index), getCorners().at(index), std::vector<cv::Point2f>{});
+    return bir::Marker(getIDs().at(index), getCorners().at(index));
+}
+
+bir::Marker bir::MarkerVector::withID(int desired_id) const {
+    std::vector<int>::const_iterator  it = std::find_if(ids_.begin(), ids_.end(), [desired_id](int id) { 
+        return (id == desired_id);
+    });
+    
+    if (it != ids_.end())
+        return {*it, corners_.at(std::distance(ids_.begin(), it))};
+
+    throw(std::invalid_argument("ID was not found inside marker vector."));
+}
+
+bool bir::MarkerVector::hasID(int desired_id) const {
+    std::vector<int>::const_iterator it = std::find_if(ids_.begin(), ids_.end(), [desired_id](int id) { 
+        return (id == desired_id);
+    });
+    return (it != ids_.end());
 }
 
 void bir::MarkerVector::pushBack(const bir::Marker& marker) {
-    this->ids_.push_back(marker.id_);
-    this->corners_.push_back(marker.corner_);
-    this->rejected_.push_back(marker.rejected_);
-}
-
-void bir::MarkerVector::pushBack(bir::Marker&& marker) {
-    this->ids_.push_back(marker.id_);
-    this->corners_.push_back(marker.corner_);
-    this->rejected_.push_back(marker.rejected_);
+    this->ids_.push_back(marker.id);
+    this->corners_.push_back(marker.corner);
 }
 
 std::vector<std::vector<cv::Point2f>>& bir::MarkerVector::getCorners() {
