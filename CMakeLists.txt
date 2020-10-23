@@ -107,9 +107,5 @@ if(CATKIN_ENABLE_TESTING)
     libmarker
     libfree_marker
   )
-
-  target_compile_definitions(free_markers_localization_test PUBLIC 
-    TEST_RESOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/test/resource/")
-
         
 endif()
