@@ -158,7 +158,6 @@ void  bir::FreeMarkersLocalization::runDetectionAndEstimation(cv::Mat& image) {
 void bir::FreeMarkersLocalization::subImageTopicCallback(const sensor_msgs::ImageConstPtr& ros_image) {
     cv::Mat image = cv_bridge::toCvCopy(ros_image, "bgr8")->image; // Convert sensor_msgs into cv::Mat.
     if(!image.empty()) {
-        ROS_INFO("RUNNING");
         runDetectionAndEstimation(image);
     }
 }
