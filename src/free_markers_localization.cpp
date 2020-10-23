@@ -6,13 +6,13 @@ bir::FreeMarkersLocalization::FreeMarkersLocalization():
     initializeMarkersLists();
     initializeCameraParameters();
     
-    enablePublishImage_ = privateNode_.param<bool>("enable_publish_image", false);
-    enablePublishPose_ = privateNode_.param<bool>("enable_publish_markers", true);
-    enablePublishTF_ = privateNode_.param<bool>("enable_tf", true);
+    enablePublishImage_ = privateNode_.param<bool>("enable/publish_image", false);
+    enablePublishPose_ = privateNode_.param<bool>("enable/publish_markers", true);
+    enablePublishTF_ = privateNode_.param<bool>("enable/tf", true);
     
-    markerTFSufix_ = privateNode_.param<std::string>("markers_sufix", "id_");
-    cameraTFName_ = privateNode_.param<std::string>("camera_tf_name", "camera");
-    dictionary_ = (cv::aruco::PREDEFINED_DICTIONARY_NAME)privateNode_.param<int>("markers_dictionary", 11);  
+    markerTFSufix_ = privateNode_.param<std::string>("markers/sufix", "id_");
+    cameraTFName_ = privateNode_.param<std::string>("camera/tf_name", "camera");
+    dictionary_ = (cv::aruco::PREDEFINED_DICTIONARY_NAME)privateNode_.param<int>("markers/dictionary", 11);
 
     poseEstimator_ = std::unique_ptr<MarkerPoseEstimator>(
         new MarkerPoseEstimator(expectedMarkers_, cameraMatrix_, distCoeffs_));
@@ -32,7 +32,7 @@ bir::FreeMarkersLocalization::FreeMarkersLocalization():
 }
 
 void bir::FreeMarkersLocalization::initializeMarkersLists() {
-    std::vector<int> lengths = privateNode_.param<std::vector<int>>("markers_length", std::vector<int>({100}));
+    std::vector<int> lengths = privateNode_.param<std::vector<int>>("markers/lengths", std::vector<int>({100}));
     
     // Check for Invalid Markers Lengths Input
     const bool length_greater_than_zero = !std::any_of( std::begin(lengths),
@@ -43,21 +43,21 @@ void bir::FreeMarkersLocalization::initializeMarkersLists() {
     // Retrieve Markers Length with its IDs
     for(int length : lengths) {
         std::vector<int> markersIDs = privateNode_.param<std::vector<int>>(
-                                        "markers_" + std::to_string(length), std::vector<int>());
+                                        "markers/" + std::to_string(length), std::vector<int>());
         expectedMarkersIds_.insert(expectedMarkersIds_.end(), markersIDs.begin(), markersIDs.end());
         expectedMarkers_.push_back(std::make_pair(length, markersIDs));
     }
 }
 
 void bir::FreeMarkersLocalization::initializeCameraParameters() {
-    std::vector<double> cameraMatrixValuesVector = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    std::vector<double> cameraMatrixValuesVector = {100.0, 0.0, 0.0, 0.0, 100.0, 0.0, 0.0, 0.0, 1.0};
     std::vector<double> distortionCoefVector = {0.0, 0.0, 0.0, 0.0, 0.0};
     
     // Retrive Camera Matrix
-    cameraMatrixValuesVector = privateNode_.param<std::vector<double>>("camera_matrix", cameraMatrixValuesVector);
+    cameraMatrixValuesVector = privateNode_.param<std::vector<double>>("camera/matrix", cameraMatrixValuesVector);
 
     // Retrive Distortion Vector
-    distortionCoefVector = privateNode_.param<std::vector<double>>("camera_distortion", distortionCoefVector);
+    distortionCoefVector = privateNode_.param<std::vector<double>>("camera/distortion", distortionCoefVector);
 
     // Check for Invalid Camera Matrix Input
     ROS_ASSERT_MSG(cameraMatrixValuesVector.size() == 9, 
