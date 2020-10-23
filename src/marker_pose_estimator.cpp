@@ -1,19 +1,19 @@
 #include <marker_localization/marker_pose_estimator.hpp>
 
-bir::MarkerPoseEstimator::MarkerPoseEstimator(const cv::Mat& camera_matrix, const cv::Mat& distortion_coef):
+bir::MarkerPoseEstimator::MarkerPoseEstimator(cv::Mat& camera_matrix, cv::Mat& distortion_coef):
     expectedMarkers_(std::vector<std::pair<int, std::vector<int>>>()), 
-    cameraMatrix_(cameraMatrix_), 
-    distCoeffs_(distortion_coef)
+    cameraMatrix_(std::move(camera_matrix)), 
+    distCoeffs_(std::move(distortion_coef))
 {
 
 }
 
 bir::MarkerPoseEstimator::MarkerPoseEstimator(  const std::vector<std::pair<int, std::vector<int>>>& expected_markers,
-                                                const cv::Mat& camera_matrix, 
-                                                const cv::Mat& distortion_coef  ):
+                                                cv::Mat& camera_matrix, 
+                                                cv::Mat& distortion_coef  ):
     expectedMarkers_(expected_markers), 
-    cameraMatrix_(cameraMatrix_), 
-    distCoeffs_(distortion_coef)                                                
+    cameraMatrix_(std::move(camera_matrix)), 
+    distCoeffs_(std::move(distortion_coef))                                                
 {
 
 }
@@ -24,8 +24,7 @@ void bir::MarkerPoseEstimator::setExpectedMarkers(const std::vector<std::pair<in
 
 bir::MarkersTransforms bir::MarkerPoseEstimator::estimatePose(const bir::MarkerVector& marker_vector) {
     bir::MarkersTransforms markers_transforms;
-    
-    if(marker_vector.isEmpty()) return markers_transforms;
+    if (marker_vector.isEmpty()) return markers_transforms;
 
     std::vector<cv::Vec3d> rotationValues, translationValues;
     
@@ -68,19 +67,23 @@ void bir::MarkerPoseEstimator::getRotationAndTranslationValues( const bir::Marke
                                                                 std::vector<float>& area,
                                                                 std::vector<int>& ids_orders    )
 {
-    if(marker_vector.isEmpty()) return;
+    if (marker_vector.isEmpty()) return;
 
-    for(auto marker_type : expectedMarkers_) {
+    for (auto marker_type : expectedMarkers_) {
         std::vector<std::vector<cv::Point2f>> corner;
         fillUpCorner(marker_vector, marker_type.second, corner, ids_orders, area);
         
         std::vector<cv::Vec3d> rotationValues, translationValues;
-        cv::aruco::estimatePoseSingleMarkers(   corner, 
-                                                marker_type.first * 1E-3, // Convert mm to m
-                                                cameraMatrix_, 
-                                                distCoeffs_,
-                                                rotationValues,
-                                                translationValues  );
+        try {
+            cv::aruco::estimatePoseSingleMarkers(   corner, 
+                                                    marker_type.first * 1E-3, // Convert mm to m
+                                                    cameraMatrix_, 
+                                                    distCoeffs_,
+                                                    rotationValues,
+                                                    translationValues  );
+        } catch (cv::Exception& e) {
+            ROS_ERROR("getRotationAndTranslationValues: %s", e.what());
+        }
         
         p_rotation_values.insert(p_rotation_values.end(), rotationValues.begin(), rotationValues.end());
         p_translation_values.insert(p_translation_values.end(), translationValues.begin(), translationValues.end());
@@ -93,12 +96,16 @@ void bir::MarkerPoseEstimator::fillUpCorner(const bir::MarkerVector& marker_vect
                                             std::vector<int>& ids_orders,
                                             std::vector<float>& area )
 {
-    for(int id : markers_id) {
+    for (int id : markers_id) {
         if (marker_vector.hasID(id)) {
-            bir::Marker marker = marker_vector.withID(id);
-            ids_orders.push_back(marker.id);
-            corner_container.push_back(std::move(marker.corner));
-            area.push_back(cv::contourArea(corner_container.back()));
+            try {
+                bir::Marker marker = marker_vector.withID(id);
+                ids_orders.push_back(marker.id);
+                corner_container.push_back(std::move(marker.corner));
+                area.push_back(cv::contourArea(corner_container.back()));
+            } catch (std::exception& e) {
+                ROS_ERROR("fillUpCorner: %s", e.what());
+            }
         }
     }
 }

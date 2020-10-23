@@ -138,7 +138,7 @@ bir::MarkerVector::~MarkerVector() {
 }
 
 bir::Marker bir::MarkerVector::at(const int index) { 
-    return bir::Marker(getIDs().at(index), getCorners().at(index));
+    return {getIDs().at(index), getCorners().at(index)};
 }
 
 bir::Marker bir::MarkerVector::withID(int desired_id) const {
@@ -150,13 +150,11 @@ bir::Marker bir::MarkerVector::withID(int desired_id) const {
         return {*it, corners_.at(std::distance(ids_.begin(), it))};
 
     throw(std::invalid_argument("ID was not found inside marker vector."));
+    return bir::Marker();
 }
 
 bool bir::MarkerVector::hasID(int desired_id) const {
-    std::vector<int>::const_iterator it = std::find_if(ids_.begin(), ids_.end(), [desired_id](int id) { 
-        return (id == desired_id);
-    });
-    return (it != ids_.end());
+    return std::any_of(ids_.begin(), ids_.end(), [desired_id](int id) { return (id == desired_id); });
 }
 
 void bir::MarkerVector::pushBack(const bir::Marker& marker) {

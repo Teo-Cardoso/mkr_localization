@@ -1,0 +1,13 @@
+<launch>
+  
+
+  <node name="free_markers_localization" pkg="marker_localization" type="free_markers_localization">
+    <rosparam command="load" 
+      file="/home/teo/Documents/mkr_localization_ws/src/bir_marker_localization/config/default.yaml"/>
+  </node>
+  
+  <test test-name="free_markers_localization_test"
+    pkg="marker_localization"
+    type="free_markers_localization_test" />
+
+</launch>

@@ -1,5 +1,5 @@
-#ifndef BIR_MARKER_DETECT_HPP
-#define BIR_MARKER_DETECT_HPP
+#ifndef MARKER_LOCALIZATION_MARKER_DECTECT_HPP
+#define MARKER_LOCALIZATION_MARKER_DECTECT_HPP
 
 #include <opencv4/opencv2/imgproc/imgproc.hpp>
 #include <opencv4/opencv2/aruco.hpp>
@@ -76,4 +76,5 @@ namespace bir {
     };
 
 }
+
 #endif
