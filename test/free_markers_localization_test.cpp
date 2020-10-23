@@ -17,6 +17,7 @@ protected:
   virtual void SetUp()
   {
     transforms_received = false;
+    node_.getParam("resource_path", resource_path);
     imgTransport_ = std::unique_ptr<image_transport::ImageTransport>(new image_transport::ImageTransport(node_));
     imagePublisher_ = imgTransport_->advertise("/camera/image_raw", 1);
     markersTransformsSubscriber_ =
@@ -38,7 +39,7 @@ protected:
 
   ros::NodeHandle node_;
   std::unique_ptr<image_transport::ImageTransport> imgTransport_;
-
+  std::string resource_path;
   // Subscriber / Publisher Testing
   image_transport::Publisher imagePublisher_;
   ros::Subscriber markersTransformsSubscriber_;
@@ -53,7 +54,7 @@ protected:
 TEST_F(FreeMarkerLocalizationTest, test_pub_sub_test)
 {
   ros::Rate pub_rate(30);
-  const std::string file_path = std::string(TEST_RESOURCE_DIR) + std::string("resource_1_aruco_board_6x6.jpg");
+  const std::string file_path = resource_path + std::string("resource_1_aruco_board_6x6.jpg");
 
   sensor_msgs::ImagePtr ros_image = cv_bridge::CvImage(std_msgs::Header(), "bgr8", cv::imread(file_path)).toImageMsg();
 
