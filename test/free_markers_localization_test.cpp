@@ -1,4 +1,4 @@
-#include <memory> // std::unique_ptr<T>
+#include <memory>  // std::unique_ptr<T>
 
 #include <gtest/gtest.h>
 
@@ -73,7 +73,7 @@ TEST_F(FreeMarkerLocalizationTest, test_pub_sub_test)
 
   EXPECT_TRUE(transforms_received);
   EXPECT_EQ(14, (int)markersPoses_.markers.size());
-  
+
   const auto& marker_18_reference = markersPoses_.markers.back();
   EXPECT_EQ(18, marker_18_reference.marker_id);
   EXPECT_NEAR(0.3413941725982918, marker_18_reference.marker_pose.translation.x, 0.001);

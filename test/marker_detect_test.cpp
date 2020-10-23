@@ -156,7 +156,7 @@ TEST(MarkerVectorTest, test_marker_vector_withid)
       36, std::vector<cv::Point2f>({ cv::Point2f(3, 4), cv::Point2f(5, 4), cv::Point2f(5, 5), cv::Point2f(3, 5) }));
 
   bir::MarkerVector marker_vector = std::vector<bir::Marker>({ marker_1, marker_54, marker_36 });
-  
+
   EXPECT_TRUE(marker_1 == marker_vector.withID(1));
   EXPECT_TRUE(marker_54 == marker_vector.withID(54));
   EXPECT_TRUE(marker_36 == marker_vector.withID(36));
@@ -260,7 +260,6 @@ TEST(MarkerDetectTest, board_0_34_6x6_test)
 
   auto marker_vector = bir::MarkerDetect::GetInstance(cv::aruco::DICT_6X6_1000)->detect(image);
 
-  EXPECT_EQ(RESOURCE_DIR, TEST_RESOURCE_DIR);
   EXPECT_EQ(35, marker_vector.size());
 
   for (int id = 0; id < 35; id++)
@@ -281,9 +280,9 @@ TEST(MarkerDetectTest, markers_printed_6x6_test)
   cv::Mat image = cv::imread(file_path);
 
   auto marker_vector = bir::MarkerDetect::GetInstance(cv::aruco::DICT_6X6_1000)->detect(image);
-  std::vector<int> expected_ids = {23, 40, 62, 98, 124, 203};
-  std::vector<int> not_expected_ids = {1, 20, 24, 32, 54, 75, 980};
-  
+  std::vector<int> expected_ids = { 23, 40, 62, 98, 124, 203 };
+  std::vector<int> not_expected_ids = { 1, 20, 24, 32, 54, 75, 980 };
+
   EXPECT_EQ(6, marker_vector.size());
 
   for (int index = 0; index < expected_ids.size(); index++)
