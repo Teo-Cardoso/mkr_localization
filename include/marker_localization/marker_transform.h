@@ -9,7 +9,6 @@
 #include <marker_localization/MarkerPose.h>
 #include <marker_localization/MarkerPoseArray.h>
 #include <utility>
-
 namespace bir
 {
 

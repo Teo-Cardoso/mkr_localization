@@ -1,3 +1,5 @@
+#include <utility>
+#include <vector>
 #include <marker_localization/marker_transform.h>
 
 bir::MarkerTransform::MarkerTransform(const MarkerTransform& marker_transform)
@@ -78,11 +80,12 @@ bir::MarkerTransformVector::MarkerTransformVector(const bir::MarkerTransformVect
 }
 
 bir::MarkerTransformVector::MarkerTransformVector(bir::MarkerTransformVector&& other) noexcept
-  : MarkerVector(std::move(other.ids_), std::move(other.corners_))
+  : MarkerVector(std::move(MarkerVector(other.ids_, other.corners_)))
   , transforms_(std::move(other.transforms_))
   , areas_(std::move(other.areas_))
   , projectionsErros_(std::move(other.projectionsErros_))
 {
+  other.clear();
 }
 
 bir::MarkerTransformVector::MarkerTransformVector(const std::vector<bir::MarkerTransform>& marker_transform_vector)
@@ -96,7 +99,7 @@ bir::MarkerTransformVector::MarkerTransformVector(const std::vector<bir::MarkerT
 bir::MarkerTransformVector::MarkerTransformVector(std::vector<int>& ids, std::vector<std::vector<cv::Point2f>>& corners,
                                                   std::vector<tf2::Transform>& transforms, std::vector<float>& areas,
                                                   std::vector<float>& erros)
-  : MarkerVector(ids, corners), transforms_(transforms), areas_(areas_), projectionsErros_(erros)
+  : MarkerVector(ids, corners), transforms_(transforms), areas_(areas), projectionsErros_(erros)
 {
 }
 
