@@ -74,7 +74,6 @@ target_link_libraries(libfree_marker
 
 add_executable(free_markers_localization src/free_markers_localization_node.cpp)
 
-# add_executable(single_marker_identification src/aruco_identification.cpp src/single_marker_identification.cpp src/single_marker_estimator.cpp)
 # add_executable(robot_pose_estimator src/aruco_identification.cpp src/single_marker_identification.cpp src/full_marker_estimator.cpp src/landmark_estimator.cpp)
 
 target_link_libraries(free_markers_localization
@@ -83,11 +82,6 @@ target_link_libraries(free_markers_localization
 	libmarker
   libfree_marker
 )
-
-# target_link_libraries(single_marker_identification
-#   ${catkin_LIBRARIES}
-#   ${OpenCV_LIBRARIES}
-# )
 
 # target_link_libraries(robot_pose_estimator
 #   ${catkin_LIBRARIES}
