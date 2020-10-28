@@ -315,7 +315,7 @@ TEST(MarkerTransformVector, test_mtvector_pushback)
   bir::MarkerTransform marker_transform7 = { 7, corners, transform, 0.02 };
 
   bir::MarkerTransformVector transform_vector1;
-  
+
   EXPECT_TRUE(transform_vector1.isEmpty());
   transform_vector1.pushBack(marker_transform0);
   EXPECT_FALSE(transform_vector1.isEmpty());
