@@ -1,5 +1,5 @@
 #include <ros/ros.h>
-#include <marker_localization/free_markers_localization.hpp>
+#include <marker_localization/free_markers_localization.h>
 
 int main(int argc, char* argv[])
 {

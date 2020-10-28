@@ -1,18 +1,22 @@
-#ifndef MARKER_LOCALIZATION_FREE_MARKERS_LOCALIZATION_HPP
-#define MARKER_LOCALIZATION_FREE_MARKERS_LOCALIZATION_HPP
+#ifndef MARKER_LOCALIZATION_FREE_MARKERS_LOCALIZATION_H
+#define MARKER_LOCALIZATION_FREE_MARKERS_LOCALIZATION_H
+
+#include <string>
+#include <vector>
+#include <utility>
+#include <memory>
 
 #include <ros/ros.h>
 #include <boost/bind.hpp>
 #include <image_transport/image_transport.h>
-#include <future>
-#include <memory>
 
 #include <opencv4/opencv2/opencv.hpp>
 #include <opencv4/opencv2/aruco.hpp>
 #include <cv_bridge/cv_bridge.h>
 
-#include <marker_localization/marker_detect.hpp>
-#include <marker_localization/marker_pose_estimator.hpp>
+#include <marker_localization/marker.h>
+#include <marker_localization/marker_detect.h>
+#include <marker_localization/marker_pose_estimator.h>
 #include <marker_localization/MarkerPoseArray.h>
 
 #include <geometry_msgs/PoseArray.h>
@@ -49,7 +53,7 @@ private:
   cv::Mat cameraMatrix_, distCoeffs_;
   cv::aruco::PREDEFINED_DICTIONARY_NAME dictionary_;
 
-  std::string markerTFSufix_, cameraTFName_;
+  std::string markerTFPrefix_, cameraTFName_;
 
   std::vector<std::pair<int, std::vector<int>>> expectedMarkers_;
   std::vector<int> expectedMarkersIds_;
@@ -65,8 +69,8 @@ private:
 
   void initializeMarkersLists();
   void initializeCameraParameters();
-  void publishTF(const bir::MarkersTransforms&);
-  void publishPose(const bir::MarkersTransforms&);
+  void publishTF(bir::MarkerTransformVector&);
+  void publishPose(bir::MarkerTransformVector&);
   void publishImage(cv::Mat& image, bir::MarkerVector& markers_to_draw);
   void runDetectionAndEstimation(cv::Mat& image);
   void subImageTopicCallback(const sensor_msgs::ImageConstPtr&);
@@ -75,4 +79,4 @@ private:
 
 }  // namespace bir
 
-#endif
+#endif  // MARKER_LOCALIZATION_FREE_MARKERS_LOCALIZATION_H

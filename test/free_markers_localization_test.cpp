@@ -8,8 +8,10 @@
 #include <geometry_msgs/Transform.h>
 #include <sensor_msgs/Image.h>
 
-#include <marker_localization/free_markers_localization.hpp>
+#include <marker_localization/marker.h>
+#include <marker_localization/marker_transform.h>
 #include <marker_localization/MarkerPoseArray.h>
+#include <marker_localization/free_markers_localization.h>
 
 class FreeMarkerLocalizationTest : public ::testing::Test
 {

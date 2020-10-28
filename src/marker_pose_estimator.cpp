@@ -1,4 +1,4 @@
-#include <marker_localization/marker_pose_estimator.hpp>
+#include <marker_localization/marker_pose_estimator.h>
 
 bir::MarkerPoseEstimator::MarkerPoseEstimator(cv::Mat& camera_matrix, cv::Mat& distortion_coef)
   : expectedMarkers_(std::vector<std::pair<int, std::vector<int>>>())
@@ -18,9 +18,10 @@ void bir::MarkerPoseEstimator::setExpectedMarkers(const std::vector<std::pair<in
   expectedMarkers_ = exp_markers;
 }
 
-bir::MarkersTransforms bir::MarkerPoseEstimator::estimatePose(const bir::MarkerVector& marker_vector)
+bir::MarkerTransformVector bir::MarkerPoseEstimator::estimatePose(const bir::MarkerVector& marker_vector)
 {
-  bir::MarkersTransforms markers_transforms;
+  bir::MarkerTransformVector markers_transforms;
+
   if (marker_vector.isEmpty())
     return markers_transforms;
 
@@ -28,16 +29,19 @@ bir::MarkersTransforms bir::MarkerPoseEstimator::estimatePose(const bir::MarkerV
 
   rotationValues.reserve(marker_vector.size());
   translationValues.reserve(marker_vector.size());
-  markers_transforms.areas.reserve(marker_vector.size());
-  markers_transforms.ids.reserve(marker_vector.size());
+  markers_transforms.getAreas().reserve(marker_vector.size());
+  markers_transforms.getIDs().reserve(marker_vector.size());
+  markers_transforms.getCorners().reserve(marker_vector.size());
 
-  getRotationAndTranslationValues(marker_vector, rotationValues, translationValues, markers_transforms.areas,
-                                  markers_transforms.ids);
+  const std::vector<cv::Point2f> emptyCorners = { cv::Point2f(), cv::Point2f(), cv::Point2f(), cv::Point2f() };
+
+  getRotationAndTranslationValues(marker_vector, rotationValues, translationValues, markers_transforms.getAreas(),
+                                  markers_transforms.getIDs(), markers_transforms.getCorners());
 
   const size_t markers_transforms_size = markers_transforms.size();
 
-  markers_transforms.transforms.reserve(markers_transforms_size);
-  markers_transforms.projections_erro.reserve(markers_transforms_size);
+  markers_transforms.getTransforms().reserve(markers_transforms_size);
+  markers_transforms.getProjectionsErros().reserve(markers_transforms_size);
 
   for (int index = 0; index < markers_transforms_size; index++)
   {
@@ -49,8 +53,9 @@ bir::MarkersTransforms bir::MarkerPoseEstimator::estimatePose(const bir::MarkerV
     transform.setOrigin(tf2::Vector3(translation[0], translation[1], translation[2]));
     transform.setRotation(quaternionFromRodrigues(rotationValues.at(index)));
 
-    markers_transforms.transforms.push_back(std::move(transform));
-    markers_transforms.projections_erro.push_back(0.00);  // TODO
+    markers_transforms.getTransforms().push_back(std::move(transform));
+    markers_transforms.getCorners().push_back(emptyCorners);
+    markers_transforms.getProjectionsErros().push_back(0.00);  // TODO
   }
 
   return markers_transforms;
@@ -59,7 +64,8 @@ bir::MarkersTransforms bir::MarkerPoseEstimator::estimatePose(const bir::MarkerV
 void bir::MarkerPoseEstimator::getRotationAndTranslationValues(const bir::MarkerVector& marker_vector,
                                                                std::vector<cv::Vec3d>& p_rotation_values,
                                                                std::vector<cv::Vec3d>& p_translation_values,
-                                                               std::vector<float>& area, std::vector<int>& ids_orders)
+                                                               std::vector<float>& area, std::vector<int>& ids,
+                                                               std::vector<std::vector<cv::Point2f>> corners)
 {
   if (marker_vector.isEmpty())
     return;
@@ -67,7 +73,7 @@ void bir::MarkerPoseEstimator::getRotationAndTranslationValues(const bir::Marker
   for (auto marker_type : expectedMarkers_)
   {
     std::vector<std::vector<cv::Point2f>> corner;
-    fillUpCorner(marker_vector, marker_type.second, corner, ids_orders, area);
+    fillUpCorner(marker_vector, marker_type.second, corner, ids, area);
 
     std::vector<cv::Vec3d> rotationValues, translationValues;
     try
@@ -80,7 +86,8 @@ void bir::MarkerPoseEstimator::getRotationAndTranslationValues(const bir::Marker
     {
       ROS_ERROR("getRotationAndTranslationValues: %s", e.what());
     }
-
+    
+    corners.insert(corners.end(), corner.begin(), corner.end());
     p_rotation_values.insert(p_rotation_values.end(), rotationValues.begin(), rotationValues.end());
     p_translation_values.insert(p_translation_values.end(), translationValues.begin(), translationValues.end());
   }

@@ -1,11 +1,13 @@
-#ifndef MARKER_LOCALIZATION_MARKERPOSEESTIMATOR_HPP
-#define MARKER_LOCALIZATION_MARKERPOSEESTIMATOR_HPP
+#ifndef MARKER_LOCALIZATION_MARKER_POSE_ESTIMATOR_H
+#define MARKER_LOCALIZATION_MARKER_POSE_ESTIMATOR_H
 
 #include <vector>
 #include <utility>
 #include <ros/ros.h>
 #include <tf2/LinearMath/Transform.h>
-#include <marker_localization/marker_detect.hpp>
+#include <marker_localization/marker_detect.h>
+#include <marker_localization/marker.h>
+#include <marker_localization/marker_transform.h>
 #include <stdexcept>
 
 namespace bir
@@ -25,19 +27,6 @@ tf2::Quaternion quaternionFromRodrigues(const cv::Vec3d& rotation_value)
   quaternion.setRotation(tf2::Vector3(rotationAxis[0], rotationAxis[1], rotationAxis[2]), rotationAngle);
   return quaternion.normalized();
 }
-
-struct MarkersTransforms
-{
-  std::vector<int> ids;
-  std::vector<tf2::Transform> transforms;
-  std::vector<float> areas;
-  std::vector<float> projections_erro;
-
-  std::size_t size() const
-  {
-    return ids.size();
-  }
-};
 
 class MarkerPoseEstimator
 {
@@ -72,7 +61,7 @@ public:
    *
    * @return bir::MarkersTransforms
    */
-  bir::MarkersTransforms estimatePose(const bir::MarkerVector&);
+  bir::MarkerTransformVector estimatePose(const bir::MarkerVector&);
 
 private:
   std::vector<std::pair<int, std::vector<int>>> expectedMarkers_;
@@ -91,7 +80,7 @@ private:
   void getRotationAndTranslationValues(const bir::MarkerVector& marker_vector,
                                        std::vector<cv::Vec3d>& p_rotation_values,
                                        std::vector<cv::Vec3d>& p_translation_values, std::vector<float>& area,
-                                       std::vector<int>& ids_orders);
+                                       std::vector<int>& ids, std::vector<std::vector<cv::Point2f>> corners);
   /**
    * @brief Fill up the corner vector with the corners of the right markers
    *  This method is used to select the corners of the expected markers and
@@ -109,4 +98,4 @@ private:
 };
 }  // namespace bir
 
-#endif
+#endif  // MARKER_LOCALIZATION_MARKER_POSE_ESTIMATOR_H

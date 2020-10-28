@@ -1,4 +1,4 @@
-#include <marker_localization/free_markers_localization.hpp>
+#include <marker_localization/free_markers_localization.h>
 
 bir::FreeMarkersLocalization::FreeMarkersLocalization()
   : node_(), privateNode_("~"), imgTransport_(node_), poseEstimator_(nullptr)
@@ -10,7 +10,7 @@ bir::FreeMarkersLocalization::FreeMarkersLocalization()
   enablePublishPose_ = privateNode_.param<bool>("enable/publish_markers", true);
   enablePublishTF_ = privateNode_.param<bool>("enable/tf", true);
 
-  markerTFSufix_ = privateNode_.param<std::string>("markers/sufix", "id_");
+  markerTFPrefix_ = privateNode_.param<std::string>("markers/prefix", "id_");
   cameraTFName_ = privateNode_.param<std::string>("camera/tf_name", "camera");
   dictionary_ = (cv::aruco::PREDEFINED_DICTIONARY_NAME)privateNode_.param<int>("markers/dictionary", 11);
 
@@ -102,7 +102,7 @@ bir::MarkerVector bir::FreeMarkersLocalization::getDetectedMarkers(const cv::Mat
   return detectedAndExpectedMarkersVector;
 }
 
-void bir::FreeMarkersLocalization::publishTF(const bir::MarkersTransforms& markers_transforms)
+void bir::FreeMarkersLocalization::publishTF(bir::MarkerTransformVector& markers_transforms)
 {
   if (!enablePublishTF_)
     return;
@@ -112,19 +112,12 @@ void bir::FreeMarkersLocalization::publishTF(const bir::MarkersTransforms& marke
 
   for (int index = 0; index < markers_transforms.size(); index++)
   {
-    geometry_msgs::TransformStamped transform;
-    transform.header.frame_id = cameraTFName_;
-    transform.header.stamp = stampTime;
-    transform.child_frame_id = markerTFSufix_ + std::to_string(markers_transforms.ids.at(index));
-    transform.transform = tf2::toMsg(markers_transforms.transforms.at(index));
-
-    transforms.push_back(std::move(transform));
+    transforms.push_back(markers_transforms.at(index).toTransformStamped(cameraTFName_, markerTFPrefix_, stampTime));
   }
-
   tfBroadcaster_.sendTransform(transforms);
 }
 
-void bir::FreeMarkersLocalization::publishPose(const bir::MarkersTransforms& markers_transforms)
+void bir::FreeMarkersLocalization::publishPose(bir::MarkerTransformVector& markers_transforms)
 {
   if (!enablePublishPose_)
     return;
@@ -136,9 +129,9 @@ void bir::FreeMarkersLocalization::publishPose(const bir::MarkersTransforms& mar
   for (int index = 0; index < markers_transforms.size(); index++)
   {
     marker_localization::MarkerPose markerPose;
-    markerPose.marker_id = markers_transforms.ids.at(index);
-    markerPose.marker_pose = tf2::toMsg(markers_transforms.transforms.at(index));
-    markerPose.error = markers_transforms.projections_erro.at(index);
+    markerPose.marker_id = markers_transforms.getIDs().at(index);
+    markerPose.marker_pose = tf2::toMsg(markers_transforms.getTransforms().at(index));
+    markerPose.error = markers_transforms.getProjectionsErros().at(index);
 
     markersPoses.markers.push_back(std::move(markerPose));
   }
@@ -158,8 +151,7 @@ void bir::FreeMarkersLocalization::publishImage(cv::Mat& image, bir::MarkerVecto
 void bir::FreeMarkersLocalization::runDetectionAndEstimation(cv::Mat& image)
 {
   MarkerVector detectedMarkers = getDetectedMarkers(image);
-  MarkersTransforms markersTransforms = poseEstimator_->estimatePose(detectedMarkers);
-
+  MarkerTransformVector markersTransforms = poseEstimator_->estimatePose(detectedMarkers);
   publishTF(markersTransforms);
   publishPose(markersTransforms);
   publishImage(image, detectedMarkers);
@@ -176,5 +168,5 @@ void bir::FreeMarkersLocalization::subImageTopicCallback(const sensor_msgs::Imag
 
 void bir::FreeMarkersLocalization::managerSubscribers()
 {
-  enablePublishImage_ = (bool)(pubImageTopic_.getNumSubscribers() > 0);
+  enablePublishImage_ = (pubImageTopic_.getNumSubscribers() > 0);
 }

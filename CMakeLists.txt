@@ -41,6 +41,11 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+add_library(libmarkers_type
+  src/marker.cpp
+  src/marker_transform.cpp
+)
+
 add_library(libmarker
   src/marker_detect.cpp
   src/marker_pose_estimator.cpp
@@ -50,9 +55,15 @@ add_library(libfree_marker
   src/free_markers_localization.cpp
 )
 
+target_link_libraries(libmarkers_type
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+)
+
 target_link_libraries(libmarker
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
+  libmarkers_type
 )
 
 target_link_libraries(libfree_marker
@@ -90,6 +101,14 @@ if(CATKIN_ENABLE_TESTING)
 	catkin_add_gtest(marker_detect_test
     test/marker_detect_test.cpp
   )
+
+  catkin_add_gtest(marker_vector_test
+    test/marker_vector_test.cpp
+  )
+
+  catkin_add_gtest(marker_transform_vector_test
+    test/marker_transform_vector_test.cpp
+  )
   
   add_rostest_gtest(free_markers_localization_test
     test/free_markers_localization.test
@@ -99,6 +118,14 @@ if(CATKIN_ENABLE_TESTING)
 	if(TARGET marker_detect_test)
   	target_link_libraries(marker_detect_test libmarker ${catkin_LIBRARIES} ${OpenCV_LIBS})
 	  target_compile_definitions(marker_detect_test PUBLIC TEST_RESOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/test/resource/")
+	endif()
+
+  if(TARGET marker_vector_test)
+  	target_link_libraries(marker_vector_test libmarker ${catkin_LIBRARIES} ${OpenCV_LIBS})
+	endif()
+
+  if(TARGET marker_transform_vector_test)
+  	target_link_libraries(marker_transform_vector_test libmarker ${catkin_LIBRARIES} ${OpenCV_LIBS})
 	endif()
 
   target_link_libraries(free_markers_localization_test
