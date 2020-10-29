@@ -17,6 +17,8 @@ bir::FreeMarkersLocalization::FreeMarkersLocalization()
   poseEstimator_ =
       std::unique_ptr<MarkerPoseEstimator>(new MarkerPoseEstimator(expectedMarkers_, cameraMatrix_, distCoeffs_));
 
+  detector_ = std::unique_ptr<MarkerDetect>(new MarkerDetect(dictionary_));
+
   subImageTopic_ =
       imgTransport_.subscribe("/camera/image_raw", 1, &bir::FreeMarkersLocalization::subImageTopicCallback, this);
 
@@ -83,7 +85,7 @@ void bir::FreeMarkersLocalization::initializeCameraParameters()
 bir::MarkerVector bir::FreeMarkersLocalization::getDetectedMarkers(const cv::Mat& image)
 {
   // Get Every Marker in the image
-  bir::MarkerVector detectMarkers = bir::MarkerDetect::GetInstance(dictionary_)->detect(image);
+  bir::MarkerVector detectMarkers = detector_->detect(image);
 
   // Get Expected Markers in the image
   bir::MarkerVector detectedAndExpectedMarkersVector;
@@ -93,7 +95,7 @@ bir::MarkerVector bir::FreeMarkersLocalization::getDetectedMarkers(const cv::Mat
 
     // Search for ID inside expectedMarkersIds.
     if (std::any_of(expectedMarkersIds_.begin(), expectedMarkersIds_.end(),
-                    [index, marker](int element) { return marker == element; }))
+                    [index, marker](int element) { return marker.id == element; }))
     {
       detectedAndExpectedMarkersVector.pushBack(marker);
     }
@@ -128,12 +130,7 @@ void bir::FreeMarkersLocalization::publishPose(bir::MarkerTransformVector& marke
 
   for (int index = 0; index < markers_transforms.size(); index++)
   {
-    marker_localization::MarkerPose markerPose;
-    markerPose.marker_id = markers_transforms.getIDs().at(index);
-    markerPose.marker_pose = tf2::toMsg(markers_transforms.getTransforms().at(index));
-    markerPose.error = markers_transforms.getProjectionsErros().at(index);
-
-    markersPoses.markers.push_back(std::move(markerPose));
+    markersPoses.markers.push_back(markers_transforms.at(index).toMarkerPose());
   }
 
   pubMarkersPoseTopic_.publish(markersPoses);

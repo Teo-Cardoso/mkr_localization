@@ -14,21 +14,16 @@ namespace bir
 class MarkerDetect
 {
 public:
-  cv::Ptr<cv::aruco::DetectorParameters> _parameters;
-
-  MarkerDetect(const MarkerDetect& other) = delete;
-  void operator=(const MarkerDetect& other) = delete;
-
-  static MarkerDetect* markerDetect_;
-  static MarkerDetect* GetInstance();
-  static MarkerDetect* GetInstance(cv::aruco::PREDEFINED_DICTIONARY_NAME dictionary);
-  void setDictionary(cv::aruco::PREDEFINED_DICTIONARY_NAME dictionary);
-  MarkerVector detect(const cv::Mat&, cv::Point2f offset = cv::Point2f(0.0, 0.0));
-
-protected:
   MarkerDetect(cv::aruco::PREDEFINED_DICTIONARY_NAME dictionary = cv::aruco::DICT_ARUCO_ORIGINAL);
+  
+  MarkerVector detect(const cv::Mat&, cv::Point2f offset = cv::Point2f(0.0, 0.0));
+  void setDictionary(cv::aruco::PREDEFINED_DICTIONARY_NAME dictionary);
+  void setParameters(cv::aruco::DetectorParameters& parameters);
 
-  cv::Ptr<cv::aruco::Dictionary> _dictionary;
+private:
+  cv::Ptr<cv::aruco::DetectorParameters> parameters_;
+  cv::Ptr<cv::aruco::Dictionary> dictionary_;
+  //todo: use dynamic reconfigure in the parameters/dictionary
 };
 
 }  // namespace bir

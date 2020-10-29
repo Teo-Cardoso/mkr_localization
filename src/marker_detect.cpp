@@ -1,46 +1,20 @@
 #include <marker_localization/marker_detect.h>
 
-bir::MarkerDetect* bir::MarkerDetect::markerDetect_ = nullptr;
-
-bir::MarkerDetect* bir::MarkerDetect::GetInstance(cv::aruco::PREDEFINED_DICTIONARY_NAME dictionary)
-{
-  if (markerDetect_ == nullptr)
-  {
-    markerDetect_ = new MarkerDetect(dictionary);
-  }
-  else
-  {
-    markerDetect_->setDictionary(dictionary);
-  }
-
-  return markerDetect_;
-}
-
-bir::MarkerDetect* bir::MarkerDetect::GetInstance()
-{
-  if (markerDetect_ == nullptr)
-  {
-    markerDetect_ = new MarkerDetect();
-  }
-
-  return markerDetect_;
-}
-
 bir::MarkerDetect::MarkerDetect(cv::aruco::PREDEFINED_DICTIONARY_NAME dictionary)
 {
   setDictionary(dictionary);
 
-  _parameters = cv::aruco::DetectorParameters::create();
+  parameters_ = cv::aruco::DetectorParameters::create();
 #if (CV_VERSION_MAJOR > 3 || CV_VERSION_MAJOR == 3 && CV_VERSION_MINOR > 2)
-  _parameters->cornerRefinementMethod = cv::aruco::CORNER_REFINE_SUBPIX;
+  parameters_->cornerRefinementMethod = cv::aruco::CORNER_REFINE_SUBPIX;
 #else
-  _parameters->doCornerRefinement = true;
+  parameters_->doCornerRefinement = true;
 #endif
 }
 
 void bir::MarkerDetect::setDictionary(cv::aruco::PREDEFINED_DICTIONARY_NAME dictionary)
 {
-  _dictionary = cv::aruco::getPredefinedDictionary(dictionary);
+  dictionary_ = cv::aruco::getPredefinedDictionary(dictionary);
 }
 
 bir::MarkerVector bir::MarkerDetect::detect(const cv::Mat& img, cv::Point2f offset)
@@ -50,7 +24,7 @@ bir::MarkerVector bir::MarkerDetect::detect(const cv::Mat& img, cv::Point2f offs
   if (img.empty())
     return marker_vector;
 
-  cv::aruco::detectMarkers(img, _dictionary, marker_vector.getCorners(), marker_vector.getIDs(), _parameters);
+  cv::aruco::detectMarkers(img, dictionary_, marker_vector.getCorners(), marker_vector.getIDs(), parameters_);
 
   if (offset != cv::Point2f(0, 0))
   {
@@ -67,5 +41,5 @@ bir::MarkerVector bir::MarkerDetect::detect(const cv::Mat& img, cv::Point2f offs
     }
   }
 
-  return std::move(marker_vector);
+  return marker_vector;
 }

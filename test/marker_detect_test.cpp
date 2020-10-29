@@ -17,8 +17,8 @@ TEST(MarkerDetectTest, board_0_34_6x6_test)
 {
   std::string file_path = RESOURCE_DIR + std::string("resource_1_aruco_board_6x6.jpg");
   cv::Mat image = cv::imread(file_path);
-
-  auto marker_vector = bir::MarkerDetect::GetInstance(cv::aruco::DICT_6X6_1000)->detect(image);
+  bir::MarkerDetect detector(cv::aruco::DICT_6X6_1000);
+  auto marker_vector = detector.detect(image);
 
   EXPECT_EQ(35, marker_vector.size());
 
@@ -39,7 +39,9 @@ TEST(MarkerDetectTest, markers_printed_6x6_test)
   std::string file_path = RESOURCE_DIR + std::string("resource_2_aruco_markers_printed_6x6.jpg");
   cv::Mat image = cv::imread(file_path);
 
-  auto marker_vector = bir::MarkerDetect::GetInstance(cv::aruco::DICT_6X6_1000)->detect(image);
+  bir::MarkerDetect detector(cv::aruco::DICT_6X6_1000);
+  auto marker_vector = detector.detect(image);
+  
   std::vector<int> expected_ids = { 23, 40, 62, 98, 124, 203 };
   std::vector<int> not_expected_ids = { 1, 20, 24, 32, 54, 75, 980 };
 

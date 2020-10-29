@@ -59,7 +59,7 @@ private:
   std::vector<int> expectedMarkersIds_;
 
   std::unique_ptr<MarkerPoseEstimator> poseEstimator_;
-
+  std::unique_ptr<MarkerDetect> detector_;
   /**
    * @brief Get the Detected Markers in the image.
    *
