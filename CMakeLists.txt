@@ -92,10 +92,6 @@ if(CATKIN_ENABLE_TESTING)
   add_definitions(-std=c++11)
 	find_package(rostest REQUIRED)
 
-	catkin_add_gtest(marker_detect_test
-    test/marker_detect_test.cpp
-  )
-
   catkin_add_gtest(marker_vector_test
     test/marker_vector_test.cpp
   )
@@ -104,6 +100,14 @@ if(CATKIN_ENABLE_TESTING)
     test/marker_transform_vector_test.cpp
   )
   
+  catkin_add_gtest(marker_detect_test
+    test/marker_detect_test.cpp
+  )
+  
+  catkin_add_gtest(marker_pose_estimator_test
+    test/marker_pose_estimator_test.cpp
+  )
+
   add_rostest_gtest(free_markers_localization_test
     test/free_markers_localization.test
     test/free_markers_localization_test.cpp
@@ -120,6 +124,10 @@ if(CATKIN_ENABLE_TESTING)
 
   if(TARGET marker_transform_vector_test)
   	target_link_libraries(marker_transform_vector_test libmarker ${catkin_LIBRARIES} ${OpenCV_LIBS})
+	endif()
+
+  if(TARGET marker_pose_estimator_test)
+  	target_link_libraries(marker_pose_estimator_test libmarker ${catkin_LIBRARIES} ${OpenCV_LIBS})
 	endif()
 
   target_link_libraries(free_markers_localization_test
