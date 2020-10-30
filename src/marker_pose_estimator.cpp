@@ -2,20 +2,21 @@
 
 bir::MarkerPoseEstimator::MarkerPoseEstimator(cv::Mat& camera_matrix, cv::Mat& distortion_coef)
   : expectedMarkers_(std::vector<std::pair<int, std::vector<int>>>())
-  , cameraMatrix_(std::move(camera_matrix))
-  , distCoeffs_(std::move(distortion_coef))
+  , cameraMatrix_(camera_matrix)
+  , distCoeffs_(distortion_coef)
 {
 }
 
 bir::MarkerPoseEstimator::MarkerPoseEstimator(const std::vector<std::pair<int, std::vector<int>>>& expected_markers,
                                               cv::Mat& camera_matrix, cv::Mat& distortion_coef)
-  : expectedMarkers_(expected_markers), cameraMatrix_(std::move(camera_matrix)), distCoeffs_(std::move(distortion_coef))
+  : expectedMarkers_(expected_markers), cameraMatrix_(camera_matrix), distCoeffs_(distortion_coef)
 {
 }
 
 void bir::MarkerPoseEstimator::setExpectedMarkers(const std::vector<std::pair<int, std::vector<int>>>& exp_markers)
 {
   expectedMarkers_ = exp_markers;
+
 }
 
 bir::MarkerTransformVector bir::MarkerPoseEstimator::estimatePose(const bir::MarkerVector& marker_vector)
@@ -55,7 +56,7 @@ bir::MarkerTransformVector bir::MarkerPoseEstimator::estimatePose(const bir::Mar
 
     markers_transforms.getTransforms().push_back(std::move(transform));
     markers_transforms.getCorners().push_back(emptyCorners);
-    markers_transforms.getProjectionsErros().push_back(0.00);  // TODO
+    markers_transforms.getProjectionsErros().push_back(0.00);  //todo create a method to get the projection error.
   }
 
   return markers_transforms;
