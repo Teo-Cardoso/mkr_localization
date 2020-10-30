@@ -11,8 +11,9 @@ bir::FreeMarkersLocalization::FreeMarkersLocalization()
   enablePublishTF_ = privateNode_.param<bool>("enable/tf", true);
 
   markerTFPrefix_ = privateNode_.param<std::string>("markers/prefix", "id_");
-  cameraTFName_ = privateNode_.param<std::string>("camera/tf_name", "camera");
   dictionary_ = (cv::aruco::PREDEFINED_DICTIONARY_NAME)privateNode_.param<int>("markers/dictionary", 11);
+
+  cameraTFName_ = privateNode_.param<std::string>("camera/tf_name", "camera");
 
   poseEstimator_ =
       std::unique_ptr<MarkerPoseEstimator>(new MarkerPoseEstimator(expectedMarkers_, cameraMatrix_, distCoeffs_));
