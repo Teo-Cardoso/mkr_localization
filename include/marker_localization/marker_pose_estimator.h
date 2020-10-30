@@ -64,9 +64,8 @@ public:
   bir::MarkerTransformVector estimatePose(const bir::MarkerVector&);
 
 private:
-  std::vector<std::pair<int, std::vector<int>>> expectedMarkers_;
   cv::Mat cameraMatrix_, distCoeffs_;
-  std::vector<int> expectedMarkersIds_;
+  std::vector<std::pair<int, std::vector<int>>> expectedMarkers_;
 
   /**
    * @brief Get the Rotation And Translation Values object
