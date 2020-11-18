@@ -1,5 +1,29 @@
 #include <marker_localization/marker_pose_estimator.h>
 
+/*
+MIT License
+
+Copyright (c) 2020 Etevaldo Cardoso
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 bir::MarkerPoseEstimator::MarkerPoseEstimator(cv::Mat& camera_matrix, cv::Mat& distortion_coef)
   : expectedMarkers_(std::vector<std::pair<int, std::vector<int>>>())
   , cameraMatrix_(camera_matrix)
@@ -16,7 +40,6 @@ bir::MarkerPoseEstimator::MarkerPoseEstimator(const std::vector<std::pair<int, s
 void bir::MarkerPoseEstimator::setExpectedMarkers(const std::vector<std::pair<int, std::vector<int>>>& exp_markers)
 {
   expectedMarkers_ = exp_markers;
-
 }
 
 bir::MarkerTransformVector bir::MarkerPoseEstimator::estimatePose(const bir::MarkerVector& marker_vector)
@@ -56,7 +79,7 @@ bir::MarkerTransformVector bir::MarkerPoseEstimator::estimatePose(const bir::Mar
 
     markers_transforms.getTransforms().push_back(std::move(transform));
     markers_transforms.getCorners().push_back(emptyCorners);
-    markers_transforms.getProjectionsErros().push_back(0.00);  //todo create a method to get the projection error.
+    markers_transforms.getProjectionsErros().push_back(0.00);  // todo create a method to get the projection error.
   }
 
   return markers_transforms;
@@ -87,7 +110,7 @@ void bir::MarkerPoseEstimator::getRotationAndTranslationValues(const bir::Marker
     {
       ROS_ERROR("getRotationAndTranslationValues: %s", e.what());
     }
-    
+
     corners.insert(corners.end(), corner.begin(), corner.end());
     p_rotation_values.insert(p_rotation_values.end(), rotationValues.begin(), rotationValues.end());
     p_translation_values.insert(p_translation_values.end(), translationValues.begin(), translationValues.end());

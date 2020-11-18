@@ -8,7 +8,7 @@
     <arg name="markers/dictionary" default="11"/>
     <arg name="markers/lengths" default="[100]"/>
     <arg name="camera/tf_name" default="camera"/>
-    <arg name="camera/matrix" default="[100.0, 0.0, 0.0, 0.0, 100.0, 0.0, 0.0, 0.0, 1.0]" />
+    <arg name="camera/matrix" default="[500.0, 0.0, 0.0, 0.0, 500.0, 0.0, 0.0, 0.0, 1.0]" />
     <arg name="camera/distortion" default="[0.0, 0.0, 0.0, 0.0, 0.0]" />
     <arg name="markers_param_file" default="$(find marker_localization)/config/markers_config.yaml" />
 
@@ -28,6 +28,6 @@
 
         <remap from="/camera/image_raw" to="/camera/image_raw"/>
         <remap from="detected_markers/image" to="detected_markers/image"/>
-        <remap from="detected_markers/pose" to="detected_markers/pose"/>
+        <remap from="detected_markers/pose" to="/detected_markers/output"/>
     </node>
 </launch>

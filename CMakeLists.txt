@@ -33,7 +33,7 @@ roslint_cpp()
 
 catkin_package(
   INCLUDE_DIRS include test/resource
-  CATKIN_DEPENDS cv_bridge geometry_msgs image_transport roscpp sensor_msgs std_msgs tf2 message_runtime
+  CATKIN_DEPENDS roscpp tf2 image_transport cv_bridge std_msgs geometry_msgs sensor_msgs message_runtime
 )
 
 include_directories(
@@ -55,6 +55,15 @@ add_library(libfree_marker
   src/free_markers_localization.cpp
 )
 
+add_library(librobot_localization
+  src/robot_markers_localization.cpp
+)
+
+add_dependencies(libmarkers_type ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(libmarker ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(libfree_marker ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(librobot_localization ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
 target_link_libraries(libmarkers_type
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
@@ -72,9 +81,14 @@ target_link_libraries(libfree_marker
   libmarker
 )
 
-add_executable(free_markers_localization src/free_markers_localization_node.cpp)
+target_link_libraries(librobot_localization
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  libmarkers_type
+)
 
-# add_executable(robot_pose_estimator src/aruco_identification.cpp src/single_marker_identification.cpp src/full_marker_estimator.cpp src/landmark_estimator.cpp)
+add_executable(free_markers_localization src/free_markers_localization_node.cpp)
+add_executable(robot_markers_localization src/robot_markers_localization_node.cpp)
 
 target_link_libraries(free_markers_localization
   ${catkin_LIBRARIES}
@@ -83,10 +97,11 @@ target_link_libraries(free_markers_localization
   libfree_marker
 )
 
-# target_link_libraries(robot_pose_estimator
-#   ${catkin_LIBRARIES}
-#   ${OpenCV_LIBRARIES}
-# )
+target_link_libraries(robot_markers_localization
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+	librobot_localization
+)
 
 if(CATKIN_ENABLE_TESTING)
   add_definitions(-std=c++11)

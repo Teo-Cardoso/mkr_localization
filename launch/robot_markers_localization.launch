@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+
+<node pkg="tf2_ros" type="static_transform_publisher" name="world_id0" args="0 0 0 0 0 0 1 map id_0" />
+<node pkg="tf2_ros" type="static_transform_publisher" name="id0_id_1" args="0.109126 0 0 0 0 0 1 id_0 id_1" />
+<node pkg="tf2_ros" type="static_transform_publisher" name="id0_id_2" args="0.219253 0 0 0 0 0 1 id_0 id_2" />
+<node pkg="tf2_ros" type="static_transform_publisher" name="id0_id_3" args="0.329380 0 0 0 0 0 1 id_0 id_3" />
+<node pkg="tf2_ros" type="static_transform_publisher" name="id0_id_4" args="0.439507 0 0 0 0 0 1 id_0 id_4" />
+</launch>
